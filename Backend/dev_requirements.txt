@@ -1,0 +1,4 @@
+fastapi
+python-multipart
+json-logging
+uvicorn
