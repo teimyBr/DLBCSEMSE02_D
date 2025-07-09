@@ -1,15 +1,15 @@
 CREATE TABLE "player" (
   "id" integer PRIMARY KEY,
-  "name" varchar,
-  "email" varchar UNIQUE,
+  "name" varchar(30),
+  "email" varchar(40) UNIQUE,
   "favourite_food_id" integer
 );
 
 CREATE TABLE "appointment" (
   "id" integer PRIMARY KEY,
-  "date" "DATE",
-  "timestamp" "TIMESTAMP",
-  "location" varchar,
+  "date" date,
+  "timestamp" timestamp,
+  "location" varchar(50),
   "host_id" integer
 );
 
@@ -21,8 +21,8 @@ CREATE TABLE "player_appointment" (
 
 CREATE TABLE "game" (
   "id" integer PRIMARY KEY,
-  "name" varchar,
-  "description" varchar
+  "name" varchar(30),
+  "description" text
 );
 
 CREATE TABLE "game_suggestion" (
@@ -35,7 +35,7 @@ CREATE TABLE "game_suggestion" (
 CREATE TABLE "game_vote" (
   "player_id" integer,
   "game_suggestion_id" integer,
-  "vote_value" integer,
+  "vote_value" bool,
   PRIMARY KEY ("player_id", "game_suggestion_id")
 );
 
@@ -52,13 +52,13 @@ CREATE TABLE "message" (
   "id" integer PRIMARY KEY,
   "message_from_player_id" integer,
   "appointment_id" integer,
-  "timestamp" varchar,
-  "message_content" "TEXT"
+  "timestamp" timestamp,
+  "message_content" text
 );
 
 CREATE TABLE "food_direction" (
   "id" integer PRIMARY KEY,
-  "designation" varchar
+  "designation" varchar(30)
 );
 
 CREATE TABLE "food_choice" (
@@ -70,16 +70,16 @@ CREATE TABLE "food_choice" (
 
 CREATE TABLE "delivery_service" (
   "id" integer PRIMARY KEY,
-  "service_name" varchar,
-  "service_location" varchar,
+  "service_name" varchar(30),
+  "service_location" varchar(30),
   "food_direction_id" integer
 );
 
 CREATE TABLE "delivery_service_menu" (
   "id" integer PRIMARY KEY,
   "delivery_service_id" integer,
-  "menu_item" varchar,
-  "menu_price" "NUMERIC(5,2)"
+  "menu_item" varchar(30),
+  "menu_price" numeric(5,2)
 );
 
 CREATE TABLE "food_order" (
