@@ -49,7 +49,7 @@ CREATE TABLE "evaluation" (
 );
 
 CREATE TABLE "message" (
-  "id" interger PRIMARY KEY,
+  "id" integer PRIMARY KEY,
   "message_from_player_id" integer,
   "appointment_id" integer,
   "timestamp" varchar,
