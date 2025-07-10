@@ -3,7 +3,7 @@ CREATE TABLE "player" (
   "name" varchar(30),
   "email" varchar(40) UNIQUE,
   "password" varchar(30),
-  "password_repeat" varchar(30),
+  "location" varchar(50),
   "favourite_food_id" integer
 );
 
@@ -30,7 +30,6 @@ CREATE TABLE "game" (
 CREATE TABLE "game_suggestion" (
   "id" integer PRIMARY KEY,
   "game_id" integer,
-  "player_id" integer,
   "appointment_id" integer
 );
 
@@ -100,8 +99,6 @@ ALTER TABLE "player_appointment" ADD FOREIGN KEY ("player_id") REFERENCES "playe
 ALTER TABLE "player_appointment" ADD FOREIGN KEY ("appointment_id") REFERENCES "appointment" ("id");
 
 ALTER TABLE "game_suggestion" ADD FOREIGN KEY ("game_id") REFERENCES "game" ("id");
-
-ALTER TABLE "game_suggestion" ADD FOREIGN KEY ("player_id") REFERENCES "player" ("id");
 
 ALTER TABLE "game_suggestion" ADD FOREIGN KEY ("appointment_id") REFERENCES "appointment" ("id");
 

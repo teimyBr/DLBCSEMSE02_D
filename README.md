@@ -5,7 +5,7 @@ Aufgabenstellung 2: Board-Gamer-App
 
 ##ER-Diagramm der Datenbankstruktur
 
-![ER-Diagramm](https://github.com/user-attachments/assets/317eccfb-3537-45cf-9e9b-a575c9b1d699)
+<img width="1809" height="1353" alt="ER-Diagramm" src="https://github.com/user-attachments/assets/9719f04e-05af-4056-af2c-1aff4c560ee2" />
 
 ## Development
 
