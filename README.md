@@ -1,6 +1,12 @@
 # DLBCSEMSE02_D
 Aufgabenstellung 2: Board-Gamer-App
 
+
+
+##ER-Diagramm der Datenbankstruktur
+
+![ER-Diagramm](https://github.com/user-attachments/assets/317eccfb-3537-45cf-9e9b-a575c9b1d699)
+
 ## Development
 
 ### docker compose
@@ -33,3 +39,4 @@ cd Backend
 cd Backend
 ./run.sh
 ```
+
