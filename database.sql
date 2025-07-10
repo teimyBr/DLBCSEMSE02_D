@@ -2,6 +2,8 @@ CREATE TABLE "player" (
   "id" integer PRIMARY KEY,
   "name" varchar(30),
   "email" varchar(40) UNIQUE,
+  "password" varchar(30),
+  "password_repeat" varchar(30),
   "favourite_food_id" integer
 );
 
