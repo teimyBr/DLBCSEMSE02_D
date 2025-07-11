@@ -5,7 +5,7 @@ UI-Konzept
 Link zum Testen des Prototyps: https://www.figma.com/proto/Q4iVmpl5158N9qSRTyhGiQ/Untitled?node-id=6-1290&p=f&t=iT2xymim2e7K3vGC-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=6%3A1290
 
 ## Startseite, Treffen erstellen und Spielebibliothek
-<img width="360" height="1112" alt="Startseite" src="https://github.com/user-attachments/assets/3aa07a29-6b34-4969-922c-69db0f5ae31b" />
+<img width="360" height="1112" alt="Startseite" src="https://github.com/user-attachments/assets/eae29cc8-2567-435a-b4fa-bae3403ccfc3" />
 <img width="360" height="800" alt="Spielebibliothek" src="https://github.com/user-attachments/assets/04fec6e4-4f99-4fd2-a6b4-44118ddc0e3d" />
 <img width="360" height="800" alt="Neues Treffen" src="https://github.com/user-attachments/assets/a96d5f24-a017-491f-8d42-45eba92841aa" />
 
