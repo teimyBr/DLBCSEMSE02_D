@@ -33,7 +33,8 @@ Aufgabenstellung 2: Board-Gamer-App
 
 
 
-##ER-Diagramm der Datenbankstruktur
+## ER-Diagramm der Datenbankstruktur
+
 
 <img width="1809" height="1353" alt="ER-Diagramm" src="https://github.com/user-attachments/assets/9719f04e-05af-4056-af2c-1aff4c560ee2" />
 
