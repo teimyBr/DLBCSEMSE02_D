@@ -11,7 +11,6 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import (
     Column, Integer, String, Boolean, Date, Text, ForeignKey, Numeric, TIMESTAMP, select, insert, update
 )
-from dotenv import load_dotenv
 
 from . import api
 from . import model

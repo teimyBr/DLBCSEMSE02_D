@@ -91,7 +91,7 @@ class PlayerOut(BaseModel):
         orm_mode = True
 
 class AppointmentCreate(BaseModel):
-    date: str
+    date: date
     timestamp: datetime
     location: str
     host_id: int
