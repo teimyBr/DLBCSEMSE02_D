@@ -1,0 +1,80 @@
+package com.boardgamer
+
+import com.boardgamer.model.Appointment
+import com.boardgamer.model.Evaluation
+import com.boardgamer.model.FoodDirection
+import com.boardgamer.model.Game
+import com.boardgamer.model.GameSuggestion
+import com.boardgamer.model.GameVote
+import com.boardgamer.model.Message
+import com.boardgamer.model.Player
+import org.junit.Test
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
+@OptIn(ExperimentalTime::class)
+class JsonConversionTests {
+    @Test
+    fun jsonConvertPlayer() {
+        val expected = Player(5, "Check", "These", "values", 10)
+        val parsed = Player.fromJson(expected.toJson())
+
+        assert(parsed == expected)
+    }
+
+    @Test
+    fun jsonConvertAppointment() {
+        val expected = Appointment(10, Instant.fromEpochMilliseconds(System.currentTimeMillis()), "heyThere", 15)
+        val parsed = Appointment.fromJson(expected.toJson())
+
+        assert(parsed == expected)
+    }
+
+    @Test
+    fun jsonConvertFoodDirection() {
+        val expected = FoodDirection(10, "SuperDuper")
+        val parsed = FoodDirection.fromJson(expected.toJson())
+
+        assert(parsed == expected)
+    }
+
+    @Test
+    fun jsonConvertGameSuggestion() {
+        val expected = GameSuggestion(123, 456, 789)
+        val parsed = GameSuggestion.fromJson(expected.toJson())
+
+        assert(parsed == expected)
+    }
+
+    @Test
+    fun jsonConvertGame() {
+        val expected = Game(11, "FunFunGame", "ThisIsASuperFunGameOnlyTheOnesWhoKnowKnow")
+        val parsed = Game.fromJson(expected.toJson())
+
+        assert(parsed == expected)
+    }
+
+    @Test
+    fun jsonConvertEvaluation() {
+        val expected = Evaluation(12, 45,78,5,5,5)
+        val parsed = Evaluation.fromJson(expected.toJson())
+
+        assert(parsed == expected)
+    }
+
+    @Test
+    fun jsonConvertGameVote() {
+        val expected = GameVote(12,45, true)
+        val parsed = GameVote.fromJson(expected.toJson())
+
+        assert(parsed == expected)
+    }
+
+    @Test
+    fun jsonConvertMessage() {
+        val expected = Message(5,21,156, Instant.fromEpochMilliseconds(System.currentTimeMillis()), "HeyGuysGoingToBeLate")
+        val parsed = Message.fromJson(expected.toJson())
+
+        assert(parsed == expected)
+    }
+}
