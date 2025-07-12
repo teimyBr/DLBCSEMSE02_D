@@ -1,11 +1,20 @@
 import logging
 import os
+from typing import List, Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import (
+    Column, Integer, String, Boolean, Date, Text, ForeignKey, Numeric, TIMESTAMP, select, insert, update
+)
+from dotenv import load_dotenv
 
-from . import hello
-
+from . import api
+from . import model
 
 app = FastAPI()
 
@@ -38,4 +47,4 @@ app.add_middleware(
     allow_credentials=True
 )
 
-app.include_router(hello.router)
+app.include_router(api.router)
