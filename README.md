@@ -27,11 +27,6 @@ Link zum Testen des Prototyps: https://www.figma.com/proto/Q4iVmpl5158N9qSRTyhGi
 ## Event bewerten
 <img width="360" height="826" alt="Abend bewerten" src="https://github.com/user-attachments/assets/d9ae81fa-2817-4bba-a12c-518dc6f57dd2" />
 
-=======
-# DLBCSEMSE02_D
-Aufgabenstellung 2: Board-Gamer-App
-
-
 
 ## ER-Diagramm der Datenbankstruktur
 
@@ -134,10 +129,10 @@ http://localhost:8000/docs
 
 ### docker compose
 
-Start postgres instance via docker compose
+Start postgres and backend instance via docker compose
 
 ```bash
-docker compose up
+docker compose up --build
 ```
 
 ### Prepare venv environment for Backend
