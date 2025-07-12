@@ -13,6 +13,6 @@ COPY --from=builder /install /usr/local
 COPY app/ /src/app/
 
 ENV ENABLE_JSON_LOGGING=true
-ENV LOG_LEVEL=INFO
+ENV LOG_LEVEL=DEBUG
 ENV PYTHONPATH=/src
 CMD ["uvicorn", "app:app", "--no-access-log", "--host" ,"0.0.0.0"]
