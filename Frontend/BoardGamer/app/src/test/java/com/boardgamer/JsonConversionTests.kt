@@ -8,6 +8,8 @@ import com.boardgamer.model.GameSuggestion
 import com.boardgamer.model.GameVote
 import com.boardgamer.model.Message
 import com.boardgamer.model.Player
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import org.junit.Test
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -24,7 +26,13 @@ class JsonConversionTests {
 
     @Test
     fun jsonConvertAppointment() {
-        val expected = Appointment(10, Instant.fromEpochMilliseconds(System.currentTimeMillis()), "heyThere", 15)
+        val expected = Appointment(
+            10,
+            LocalDate(2025, 2, 5),
+            LocalDateTime(2025, 5, 1, 10, 15, 5, 123),
+            "heyThere",
+            15
+        )
         val parsed = Appointment.fromJson(expected.toJson())
 
         assert(parsed == expected)
@@ -56,7 +64,7 @@ class JsonConversionTests {
 
     @Test
     fun jsonConvertEvaluation() {
-        val expected = Evaluation(12, 45,78,5,5,5)
+        val expected = Evaluation(12, 45, 78, 5, 5, 5)
         val parsed = Evaluation.fromJson(expected.toJson())
 
         assert(parsed == expected)
@@ -64,7 +72,7 @@ class JsonConversionTests {
 
     @Test
     fun jsonConvertGameVote() {
-        val expected = GameVote(12,45, true)
+        val expected = GameVote(12, 45, true)
         val parsed = GameVote.fromJson(expected.toJson())
 
         assert(parsed == expected)
@@ -72,7 +80,13 @@ class JsonConversionTests {
 
     @Test
     fun jsonConvertMessage() {
-        val expected = Message(5,21,156, Instant.fromEpochMilliseconds(System.currentTimeMillis()), "HeyGuysGoingToBeLate")
+        val expected = Message(
+            5,
+            21,
+            156,
+            Instant.fromEpochMilliseconds(System.currentTimeMillis()),
+            "HeyGuysGoingToBeLate"
+        )
         val parsed = Message.fromJson(expected.toJson())
 
         assert(parsed == expected)
