@@ -140,7 +140,7 @@ async def addGameVote(vote: model.GameVoteCreate, session: AsyncSession = Depend
 
 @router.post("/gameVotes/update/", response_model=dict)
 async def updateGameVote(vote: model.GameVoteCreate, session: AsyncSession = Depends(get_session)):
-    logging.info(f"Update Game vote")
+    logging.info(f"Update game vote")
     result = await session.execute(
         select(model.GameVote).where(
             model.GameVote.player_id == vote.player_id,
@@ -159,13 +159,13 @@ async def updateGameVote(vote: model.GameVoteCreate, session: AsyncSession = Dep
 @router.get("/gameVotes/{appointmentId}/{playerId}", response_model=List[model.GameVoteOut])
 async def getGameVotesForPlayer(appointmentId: int, playerId: int, session: AsyncSession = Depends(get_session)):
     # Get all game_suggestion_ids for appointment
-    logging.info("Get all Game suggestion ids for appointment: {appointmentId} and player: {playerId}")
+    logging.info("Get all game suggestion ids for appointment: {appointmentId} and player: {playerId}")
     result = await session.execute(
         select(model.GameSuggestion.id).where(model.GameSuggestion.appointment_id == appointmentId)
     )
     suggestion_ids = [row[0] for row in result.all()]
     if not suggestion_ids:
-        logging.warning(f"No Game suggestion found")
+        logging.warning(f"No game suggestion found")
         return []
     result = await session.execute(
         select(model.GameVote).where(
@@ -173,34 +173,34 @@ async def getGameVotesForPlayer(appointmentId: int, playerId: int, session: Asyn
             model.GameVote.game_suggestion_id.in_(suggestion_ids)
         )
     )
-    logging.info("Returned Game suggestion ids for appointment: {appointmentId} and player: {playerId}")
+    logging.info("Returned game suggestion ids for appointment: {appointmentId} and player: {playerId}")
     return result.scalars().all()
 
 @router.get("/gameVotes/{appointmentId}", response_model=List[model.GameVoteOut])
 async def getGameVotes(appointmentId: int, session: AsyncSession = Depends(get_session)):
-    logging.info("Get all Game suggestion ids for appointment: {appointmentId}")
+    logging.info("Get all game suggestion ids for appointment: {appointmentId}")
     result = await session.execute(
         select(model.GameSuggestion.id).where(model.GameSuggestion.appointment_id == appointmentId)
     )
     suggestion_ids = [row[0] for row in result.all()]
     if not suggestion_ids:
-        logging.warning(f"No Game suggestion found")
+        logging.warning(f"No game suggestion found")
         return []
     result = await session.execute(
         select(model.GameVote).where(model.GameVote.game_suggestion_id.in_(suggestion_ids))
     )
-    logging.info("Returned Game suggestion ids for appointment: {appointmentId}")
+    logging.info("Returned game suggestion ids for appointment: {appointmentId}")
     return result.scalars().all()
 
 @router.get("/foodDirections", response_model=List[model.FoodDirectionOut])
 async def getFoodDirections(session: AsyncSession = Depends(get_session)):
-    logging.info("Return all Food Directions")
+    logging.info("Return all food directions")
     result = await session.execute(select(model.FoodDirection))
     return result.scalars().all()
 
 @router.post("/foodChoices/insert/{appointmentId}/{playerId}/{foodDirectionId}", response_model=dict)
 async def addFoodChoice(appointmentId: int, playerId: int, foodDirectionId: int, session: AsyncSession = Depends(get_session)):
-    logging.info("Insert Food choices")
+    logging.info("Insert food choices")
     new_choice = model.FoodChoice(
         appointment_id=appointmentId,
         player_id=playerId,
@@ -210,22 +210,22 @@ async def addFoodChoice(appointmentId: int, playerId: int, foodDirectionId: int,
     try:
         await session.commit()
         await session.refresh(new_choice)
-        logging.info("Insert Food choices sucessfully: {new_choice.id}")
+        logging.info("Insert food choices sucessfully: {new_choice.id}")
         return {"id": new_choice.id}
     except Exception:
         await session.rollback()
-        logging.warning(f"Insert Food choices failed")
+        logging.warning(f"Insert food choices failed")
         return {"id": -1}
 
 @router.get("/foodChoices/{appointmentId}", response_model=List[model.FoodChoiceOut])
 async def getFoodChoices(appointmentId: int, session: AsyncSession = Depends(get_session)):
-    logging.info("Get Food choices for appointment: {appointmentId}")
+    logging.info("Get food choices for appointment: {appointmentId}")
     result = await session.execute(select(model.FoodChoice).where(model.FoodChoice.appointment_id == appointmentId))
     return result.scalars().all()
 
 @router.get("/foodChoices/{appointmentId}/{playerId}", response_model=Optional[model.FoodChoiceOut])
 async def getFoodChoice(appointmentId: int, playerId: int, session: AsyncSession = Depends(get_session)):
-    logging.info("Get Food choices for appointment: {appointmentId} and player: {playerId}")
+    logging.info("Get food choices for appointment: {appointmentId} and player: {playerId}")
     result = await session.execute(
         select(model.FoodChoice).where(
             model.FoodChoice.appointment_id == appointmentId,
