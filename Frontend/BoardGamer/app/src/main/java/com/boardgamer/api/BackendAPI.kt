@@ -46,7 +46,7 @@ class BackendAPI {
         return Json.decodeFromString(client.get("$basicAddress/appointments").bodyAsText())
     }
 
-    suspend fun insertAppointment(appointment: Appointment): Long {
+    suspend fun addAppointment(appointment: Appointment): Long {
         val response = post("$basicAddress/appointments/insert/", appointment.toJson())
         return getIdFromResponse(response)
     }
@@ -77,9 +77,9 @@ class BackendAPI {
         return getIdFromResponse(response)
     }
 
-    suspend fun updateGameVote(gameVote: GameVote): Long {
+    suspend fun updateGameVote(gameVote: GameVote): Boolean {
         val response = post("$basicAddress/gameVotes/update/", gameVote.toJson())
-        return getIdFromResponse(response)
+        return getBooleanFromResponse(response)
     }
 
     suspend fun getGameVotesForPlayer(appointmentId: Long, playerId: Long): List<GameVote> {
@@ -88,7 +88,7 @@ class BackendAPI {
         )
     }
 
-    suspend fun getGameVoteForAppointment(appointmentId: Long): List<GameVote> {
+    suspend fun getGameVotesForAppointment(appointmentId: Long): List<GameVote> {
         return Json.decodeFromString(
             client.get("$basicAddress/gameVotes/$appointmentId").bodyAsText()
         )
