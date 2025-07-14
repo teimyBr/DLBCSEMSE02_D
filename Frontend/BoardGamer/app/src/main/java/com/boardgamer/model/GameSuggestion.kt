@@ -1,17 +1,16 @@
 package com.boardgamer.model
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable
 data class GameSuggestion(
-    val id: Long,
+    val id: Long = -1,
     val gameId: Long,
     val appointmentId: Long
 ) {
     fun toJson(): String {
-        return Json.encodeToString(this)
+        return JsonSetup.json.encodeToString(this)
     }
 
     companion object {

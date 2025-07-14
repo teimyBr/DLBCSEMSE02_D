@@ -12,7 +12,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import org.junit.Test
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 class JsonConversionTests {
@@ -84,7 +83,7 @@ class JsonConversionTests {
             5,
             21,
             156,
-            Instant.fromEpochMilliseconds(System.currentTimeMillis()),
+            LocalDateTime(2025, 7, 13, 21, 14, 12, 123),
             "HeyGuysGoingToBeLate"
         )
         val parsed = Message.fromJson(expected.toJson())

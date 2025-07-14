@@ -1,21 +1,21 @@
 package com.boardgamer.model
 
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 @Serializable
 data class Message constructor(
-    val id: Long,
+    val id: Long = -1,
     val playerId: Long,
     val appointmentId: Long,
-    val timestamp: Instant,
+    val timestamp: LocalDateTime,
     val message: String
 ) {
     fun toJson(): String {
-        return Json.encodeToString(this)
+        return JsonSetup.json.encodeToString(this)
     }
 
     companion object {

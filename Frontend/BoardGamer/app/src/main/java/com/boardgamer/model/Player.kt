@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 data class Player(
-    val id: Long? = null,
+    val id: Long = -1,
     val name: String,
     val email: String,
     val location: String,
@@ -14,7 +14,7 @@ data class Player(
     val favouriteFoodId: Long
 ) {
     fun toJson(): String {
-        return Json.encodeToString(this)
+        return JsonSetup.json.encodeToString(this)
     }
 
     companion object {

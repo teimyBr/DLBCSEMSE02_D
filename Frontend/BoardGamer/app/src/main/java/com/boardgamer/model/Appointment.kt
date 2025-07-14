@@ -10,7 +10,7 @@ import kotlin.time.ExperimentalTime
 @Serializable
 @OptIn(ExperimentalTime::class)
 data class Appointment(
-    val id: Long,
+    val id: Long = -1,
     val date: LocalDate,
     val timestamp: LocalDateTime,
     val location: String,
@@ -18,7 +18,7 @@ data class Appointment(
     val hostId: Long
 ) {
     fun toJson(): String {
-        return Json.encodeToString(this)
+        return JsonSetup.json.encodeToString(this)
     }
 
     companion object {
