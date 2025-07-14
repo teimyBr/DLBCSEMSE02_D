@@ -1,6 +1,7 @@
 import logging
 import os
 from typing import List, Optional
+from datetime import datetime
 
 from fastapi import FastAPI, APIRouter,  HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -82,7 +83,22 @@ async def getAppointments(session: AsyncSession = Depends(get_session)):
 @router.post("/appointments/insert/", response_model=dict)
 async def addAppointment(appointment: model.AppointmentCreate, session: AsyncSession = Depends(get_session)):
     logging.info("Inserting new appointment")
-    new_appointment = model.Appointment(**appointment.dict())
+    ts = appointment.timestamp
+    if ts.tzinfo is not None:
+        ts = ts.astimezone().replace(tzinfo=None)
+
+    # Nächste freie ID bestimmen
+    result = await session.execute(select(func.max(model.Appointment.id)))
+    max_id = result.scalar()
+    next_id = (max_id or 0) + 1
+
+    new_appointment = model.Appointment(
+        id=next_id,  # <--- ID explizit setzen
+        date=appointment.date,
+        timestamp=ts,
+        location=appointment.location,
+        host_id=appointment.host_id
+    )
     session.add(new_appointment)
     await session.commit()
     await session.refresh(new_appointment)
@@ -97,7 +113,12 @@ async def updateAppointment(appointment: model.AppointmentOut, session: AsyncSes
     if not db_appointment:
         logging.warning(f"Appointment with ID {appointment.id} not found")
         return {"success": False}
-    for key, value in appointment.dict().items():
+    # timestamp auf naive Zeit konvertieren, falls nötig
+    data = appointment.dict()
+    ts = data.get("timestamp")
+    if ts and ts.tzinfo is not None:
+        data["timestamp"] = ts.astimezone().replace(tzinfo=None)
+    for key, value in data.items():
         setattr(db_appointment, key, value)
     await session.commit()
     logging.info(f"Appointment with ID {appointment.id} updated successfully")
@@ -112,7 +133,16 @@ async def getGameSuggestions(appointmentId: int, session: AsyncSession = Depends
 @router.post("/gameSuggestions/insert/", response_model=dict)
 async def addGameSuggestions(suggestions: List[model.GameSuggestionCreate], session: AsyncSession = Depends(get_session)):
     logging.info(f"Inserting {len(suggestions)} game suggestions")
-    objs = [model.GameSuggestion(**sugg.dict()) for sugg in suggestions]
+    # Aktuelle maximale ID abfragen
+    result = await session.execute(select(func.max(model.GameSuggestion.id)))
+    max_id = result.scalar()
+    next_id = (max_id or 0) + 1
+
+    objs = []
+    for i, sugg in enumerate(suggestions):
+        obj = model.GameSuggestion(id=next_id + i, **sugg.dict())
+        objs.append(obj)
+
     session.add_all(objs)
     await session.commit()
     logging.info("Game suggestions inserted successfully")
@@ -201,7 +231,13 @@ async def getFoodDirections(session: AsyncSession = Depends(get_session)):
 @router.post("/foodChoices/insert/{appointmentId}/{playerId}/{foodDirectionId}", response_model=dict)
 async def addFoodChoice(appointmentId: int, playerId: int, foodDirectionId: int, session: AsyncSession = Depends(get_session)):
     logging.info("Insert food choices")
+    # Nächste freie ID bestimmen
+    result = await session.execute(select(func.max(model.FoodChoice.id)))
+    max_id = result.scalar()
+    next_id = (max_id or 0) + 1
+
     new_choice = model.FoodChoice(
+        id=next_id,
         appointment_id=appointmentId,
         player_id=playerId,
         food_direction_id=foodDirectionId
@@ -210,11 +246,11 @@ async def addFoodChoice(appointmentId: int, playerId: int, foodDirectionId: int,
     try:
         await session.commit()
         await session.refresh(new_choice)
-        logging.info("Insert food choices sucessfully: {new_choice.id}")
+        logging.info(f"Insert food choices successfully: {new_choice.id}")
         return {"id": new_choice.id}
     except Exception:
         await session.rollback()
-        logging.warning(f"Insert food choices failed")
+        logging.warning("Insert food choices failed")
         return {"id": -1}
 
 @router.get("/foodChoices/{appointmentId}", response_model=List[model.FoodChoiceOut])
@@ -237,7 +273,12 @@ async def getFoodChoice(appointmentId: int, playerId: int, session: AsyncSession
 @router.post("/evaluations/insert/", response_model=dict)
 async def addEvaluation(evaluation: model.EvaluationCreate, session: AsyncSession = Depends(get_session)):
     logging.info("Insert evaluations")
-    new_eval = model.Evaluation(**evaluation.dict())
+    # Nächste freie ID bestimmen
+    result = await session.execute(select(func.max(model.Evaluation.id)))
+    max_id = result.scalar()
+    next_id = (max_id or 0) + 1
+
+    new_eval = model.Evaluation(id=next_id, **evaluation.dict())
     session.add(new_eval)
     await session.commit()
     await session.refresh(new_eval)
@@ -252,7 +293,17 @@ async def getEvaluations(appointmentId: int, session: AsyncSession = Depends(get
 @router.post("/messages/insert/", response_model=dict)
 async def addMessage(message: model.MessageCreate, session: AsyncSession = Depends(get_session)):
     logging.info("Insert messages")
-    new_msg = model.Message(**message.dict())
+    data = message.dict()
+    ts = data.get("timestamp")
+    if ts and ts.tzinfo is not None:
+        data["timestamp"] = ts.astimezone().replace(tzinfo=None)
+    
+    # Nächste freie ID bestimmen
+    result = await session.execute(select(func.max(model.Message.id)))
+    max_id = result.scalar()
+    next_id = (max_id or 0) + 1
+
+    new_msg = model.Message(id=next_id, **data)
     session.add(new_msg)
     await session.commit()
     await session.refresh(new_msg)
