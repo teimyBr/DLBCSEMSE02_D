@@ -5,11 +5,11 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 data class FoodDirection(
-    val id: Long,
+    val id: Long = -1,
     val designation: String
 ) {
     fun toJson(): String {
-        return Json.encodeToString(this)
+        return JsonSetup.json.encodeToString(this)
     }
 
     companion object {
