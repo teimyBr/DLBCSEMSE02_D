@@ -13,7 +13,7 @@ import kotlinx.datetime.LocalDateTime
 import org.junit.Test
 
 class ApiTest {
-    val backend = BackendAPI()
+    val backend = BackendAPI("http://localhost:8000")
 
     @Test
     fun authenticate() {
