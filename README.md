@@ -157,3 +157,31 @@ cd Backend
 cd Backend
 ./run.sh
 ```
+
+## Work with the Frontend
+
+Das Frontend ist eine Android App. Daher wird empfohlen mit Android Studio zu arbeiten. 
+Dies ist eine kostenlose IDE auf Basis von Jetbrains IntelliJ welche speziel für die Entwicklung von Android Apps gedacht ist.
+
+### Entwicklung an der App
+
+Einfach den BroadGamer Ordner im Frontend Ordner in Android Studio öffnen als Projekt
+Danach einmal warten bis der gradle sync durchgelaufen ist & danach sollte alles einsatz bereit sein um die App zu bauen & auch die Unit Test auszuführen.
+
+### Dependencies Frontend
+
+2 Schritte sind hierfür nötig:
+1. Dependency in der libs.version.toml datei hinzufügen. Das Pattern hierfür kann in den vorhandenen abgelesen werden
+2. Danach in der build.gradle.kts datei von dem app module die Abhängigkeit in dem dependencies teil hinzufügen. Pattern kann wieder von vorhandenen abgeguckt werden
+
+### App bauen und laufen lassen
+
+Entweder ein Android smartphone anschließen welches erlaubt über adb apk's zu installieren oder einen emulator in android studio aufsetzen
+Danach über den Run Knopf in Android Studio bauen lassen & auf dem Gerät/Emulator installieren
+Die App sollte sich dann automatisch öffnen wenn der build & install prozess durchgelaufen ist.
+
+### Unit Tests bauen
+
+Einfach die Unit Test datei in Android Studio öffnen
+Diese hat dann in der UI eine Art Button um einzelne Test fälle oder auch eine ganze Klasse auszuführen
+Unabhängig davon kann auch die Gradle Task: testDebugUnitTest oder testReleaseUnitTest ausgeführt werden. Diese lässt *alle* Unit Test laufen

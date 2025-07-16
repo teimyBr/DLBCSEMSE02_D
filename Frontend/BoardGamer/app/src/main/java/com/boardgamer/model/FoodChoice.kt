@@ -5,25 +5,17 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class Evaluation(
-    val id: Long = -1,
+data class FoodChoice(
+    val id: Long,
     @SerialName("player_id")
     val playerId: Long,
     @SerialName("appointment_id")
     val appointmentId: Long,
-    @SerialName("meal_evaluation")
-    val mealEvaluation: Int,
-    @SerialName("host_evaluation")
-    val hostEvaluation: Int,
-    @SerialName("overall_evaluation")
-    val overallEvaluation: Int
+    @SerialName("food_direction_id")
+    val foodDirectionId: Long
 ) {
-    fun toJson(): String {
-        return JsonSetup.json.encodeToString(this)
-    }
-
     companion object {
-        fun fromJson(input: String): Evaluation {
+        fun fromJson(input: String): FoodChoice {
             return Json.decodeFromString(input)
         }
     }
