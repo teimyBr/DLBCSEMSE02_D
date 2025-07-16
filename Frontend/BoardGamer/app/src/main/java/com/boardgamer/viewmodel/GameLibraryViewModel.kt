@@ -1,17 +1,22 @@
 package com.boardgamer.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Game
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class GameLibraryViewModel : ViewModel() {
     val backend = BackendAPI()
+    private val games = MutableStateFlow<List<Game>>(listOf())
+    val gameFlow = games.asStateFlow()
 
-    //TODO figure out threading here, this should likely be handled by flows,
-    // so that the backend communication runs on a background thread,
-    // and we go back into the ui thread when we have the list of games & need to render it
-    fun getGames(): List<Game> {
-        return runBlocking { backend.getGames() }
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            games.value = backend.getGames()
+        }
     }
 }
