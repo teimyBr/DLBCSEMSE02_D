@@ -26,9 +26,11 @@ import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 
-class BackendAPI {
+//For more info about the basicAddress see: https://developer.android.com/studio/run/emulator-networking
+class BackendAPI(
+    val basicAddress: String = "http://10.0.2.2:8000"
+) {
     val client = HttpClient(CIO)
-    val basicAddress = "http://localhost:8000"
 
     suspend fun authenticate(name: String, password: String): Player {
         return Json.decodeFromString(

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BoardGamer</string>
+    <string name="game_library_title">Spielebibliothek</string>
 </resources>
