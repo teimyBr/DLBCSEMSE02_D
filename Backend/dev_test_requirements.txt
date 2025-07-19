@@ -1,3 +1,7 @@
 pytest
+pytest-asyncio
 pytest-mock
+fastapi
 requests
+sqlalchemy[asyncio]
+typing_extensions
