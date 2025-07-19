@@ -158,6 +158,29 @@ cd Backend
 ./run.sh
 ```
 
+### Prepare test venv environment for backend
+
+```bash
+cd Backend
+./prepare_test.sh
+```
+
+### Update test requirements for backend
+
+Add new dependencies to `./dev_test_requirements.txt` and run:
+
+```bash
+cd Backend
+./prepare_test.sh
+```
+
+### Run tests for backend
+
+```bash
+cd Backend
+./run_tests.sh
+```
+
 ## Work with the Frontend
 
 Das Frontend ist eine Android App. Daher wird empfohlen mit Android Studio zu arbeiten. 
