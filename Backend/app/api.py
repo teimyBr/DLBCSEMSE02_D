@@ -124,6 +124,23 @@ async def updateAppointment(appointment: model.AppointmentOut, session: AsyncSes
     logging.info(f"Appointment with ID {appointment.id} updated successfully")
     return {"success": True}
 
+@router.get("/playerAppointments", response_model=List[model.PlayerAppointmentOut])
+async def getPlayerAppointments(session: AsyncSession = Depends(get_session)):
+    logging.info("Fetching all player_appointments")
+    result = await session.execute(select(model.PlayerAppointment))
+    return result.scalars().all()
+
+@router.post("/playerAppointment/insert/", response_model=dict)
+async def addPlayerAppointment(pa: model.PlayerAppointmentCreate, session: AsyncSession = Depends(get_session)):
+    logging.info("Inserting new player_appointment")
+    new_pa = model.PlayerAppointment(
+        player_id=pa.player_id,
+        appointment_id=pa.appointment_id
+    )
+    session.add(new_pa)
+    await session.commit()
+    return {"player_id": new_pa.player_id, "appointment_id": new_pa.appointment_id}
+
 @router.get("/gameSuggestions/{appointmentId}", response_model=List[model.GameSuggestionOut])
 async def getGameSuggestions(appointmentId: int, session: AsyncSession = Depends(get_session)):
     logging.info(f"Fetching game suggestions for appointment ID: {appointmentId}")

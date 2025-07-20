@@ -7,6 +7,7 @@ from app import authenticate, register, getAppointments, addAppointment, updateA
 from app import getGameSuggestions, addGameSuggestions, getGames, addGameVote, updateGameVote
 from app import getGameVotesForPlayer, getGameVotes, getFoodDirections, addFoodChoice, getFoodChoices
 from app import getFoodChoice, addEvaluation, getEvaluations, addMessage, getMessages, insertGame
+from app import getPlayerAppointments, addPlayerAppointment
 from app import model
 
 
@@ -218,6 +219,43 @@ async def test_update_appointment_not_found(mocker):
 
     # Assert
     assert result == {"success": False}
+
+@pytest.mark.asyncio
+async def test_get_player_appointments_success(mocker):
+    # Arrange
+    mock_session = MagicMock()
+    mock_result = MagicMock()
+    # Beispiel-Daten
+    player_appointments = [
+        model.PlayerAppointmentOut(player_id=1, appointment_id=2),
+        model.PlayerAppointmentOut(player_id=3, appointment_id=4)
+    ]
+    # Simuliere scalars().all()
+    mock_result.scalars = MagicMock(return_value=MagicMock(all=MagicMock(return_value=player_appointments)))
+    mock_session.execute = AsyncMock(return_value=mock_result)
+
+    # Act
+    result = await getPlayerAppointments(session=mock_session)
+
+    # Assert
+    assert result == player_appointments
+    mock_session.execute.assert_awaited_once()
+
+@pytest.mark.asyncio
+async def test_add_player_appointment_success(mocker):
+    # Arrange
+    pa_data = model.PlayerAppointmentCreate(player_id=5, appointment_id=6)
+    mock_session = MagicMock()
+    mock_session.add = MagicMock()
+    mock_session.commit = AsyncMock()
+
+    # Act
+    result = await addPlayerAppointment(pa=pa_data, session=mock_session)
+
+    # Assert
+    assert result == {"player_id": 5, "appointment_id": 6}
+    mock_session.add.assert_called_once()
+    mock_session.commit.assert_awaited_once()
 
 @pytest.mark.asyncio
 async def test_get_game_suggestions(mocker):
