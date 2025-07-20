@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">BoardGamer</string>
+    <string name="app_welcome">Willkommen bei BoardGamer</string>
+    <string name="register_for_boardgamer">Registriere dich für BoardGamer</string>
+    <string name="login_now">Melde dich direkt an</string>
+    <string name="registration">Registierung</string>
+    <string name="not_registered_yet">Noch nicht registriert?</string>
+    <string name="go_to_registration">Zur Registierung</string>
+    <string name="password">Passwort</string>
+    <string name="password_repeat">Passwort wiederholen</string>
+    <string name="passwordsDoNotMatch">Die Passwörter stimmen nicht überein!</string>">
+
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="location">Wohnort</string>
+    <string name="login">Anmelden</string>
+    <string name="favourite_food">Bevorzugtes Essen</string>
+
     <string name="game_library_title">Spielebibliothek</string>
 </resources>
