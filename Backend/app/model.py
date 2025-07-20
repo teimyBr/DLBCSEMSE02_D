@@ -112,6 +112,10 @@ class GameOut(BaseModel):
     class Config:
         orm_mode = True
 
+class GameCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+
 class GameSuggestionCreate(BaseModel):
     game_id: int
     appointment_id: int

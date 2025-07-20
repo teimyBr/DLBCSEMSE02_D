@@ -154,6 +154,30 @@ async def getGames(session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(model.Game))
     return result.scalars().all()
 
+@router.post("/game/insert", response_model=dict)
+async def insert_game(game: model.GameCreate, session: AsyncSession = Depends(get_session)):
+    logging.info("Insert game")
+    # Nächste freie ID bestimmen
+    result = await session.execute(select(func.max(model.Game.id)))
+    max_id = result.scalar()
+    next_id = (max_id or 0) + 1
+
+    new_game = model.Game(
+        id=next_id,
+        name=game.name,
+        description=game.description
+    )
+    session.add(new_game)
+    try:
+        await session.commit()
+        await session.refresh(new_game)
+        logging.info(f"Insert game successfully: {new_game.id}")
+        return {"id": new_game.id}
+    except Exception:
+        await session.rollback()
+        logging.warning("Insert game failed")
+        return {"id": -1}
+
 @router.post("/gameVotes/insert/", response_model=dict)
 async def addGameVote(vote: model.GameVoteCreate, session: AsyncSession = Depends(get_session)):
     logging.info(f"Inserting game vote")
