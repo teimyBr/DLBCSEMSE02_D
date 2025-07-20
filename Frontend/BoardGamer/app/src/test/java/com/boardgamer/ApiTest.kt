@@ -3,6 +3,7 @@ package com.boardgamer
 import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Appointment
 import com.boardgamer.model.Evaluation
+import com.boardgamer.model.Game
 import com.boardgamer.model.GameSuggestion
 import com.boardgamer.model.GameVote
 import com.boardgamer.model.Message
@@ -18,7 +19,7 @@ class ApiTest {
     @Test
     fun authenticate() {
         val player = runBlocking { backend.authenticate("Anna Schmidt", "pass123") }
-        assert(player.name == "Anna Schmidt") { "Expected player Anna Schmidt, but got: $player" }
+        assert(player?.name == "Anna Schmidt") { "Expected player Anna Schmidt, but got: $player" }
     }
 
     @Test
@@ -76,6 +77,19 @@ class ApiTest {
     fun getGames() {
         val games = runBlocking { backend.getGames() }
         assert(games.size == 3) { "Expected 3 games, but got: $games" }
+    }
+
+    @Test
+    fun addGame() {
+        val id = runBlocking {
+            backend.addGame(
+                Game(
+                    name = "AwesomeGame",
+                    description = "This is an awesome game, everyone wants to play"
+                )
+            )
+        }
+        assert(id > -1) { "Expected to successfully add the game to the backend" }
     }
 
     @Test

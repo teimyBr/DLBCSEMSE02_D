@@ -143,6 +143,16 @@ class BackendAPI(
         }
     }
 
+    suspend fun addGame(game: Game): Long {
+        val response = post("$basicAddress/game/insert/", game.toJson())
+        if (response.status == HttpStatusCode.OK) {
+            return getIdFromResponse(response)
+        } else {
+            Log.i(TAG, "Failed to add game, ${response.status}, ${response.bodyAsText()}")
+            return -1
+        }
+    }
+
     suspend fun addGameVote(gameVote: GameVote): Long {
         val response = post("$basicAddress/gameVotes/insert/", gameVote.toJson())
         if (response.status == HttpStatusCode.OK) {

@@ -18,6 +18,11 @@ sealed interface RegistrationState {
 }
 
 class RegistrationViewModel : ViewModel() {
+
+    companion object {
+        const val SCREEN_NAME = "Register"
+    }
+
     private val backend = BackendAPI()
 
     private val _registrationState = MutableStateFlow<RegistrationState>(RegistrationState.Idle)
@@ -56,17 +61,35 @@ class RegistrationViewModel : ViewModel() {
             try {
                 _foodDirections.value = backend.getFoodDirections()
             } catch (e: Exception) {
-                _registrationState.value = RegistrationState.Error("Essensrichtungen konnten nicht geladen werden!")
+                _registrationState.value =
+                    RegistrationState.Error("Essensrichtungen konnten nicht geladen werden!")
             }
         }
     }
 
-    fun onUsernameChange(value: String) { _username.value = value }
-    fun onEmailChange(value: String) { _email.value = value }
-    fun onLocationChange(value: String) { _location.value = value }
-    fun onPasswordChange(value: String) { _password.value = value }
-    fun onPasswordRepeatChange(value: String) { _passwordRepeat.value = value }
-    fun onFoodSelected(food: FoodDirection) { _selectedFood.value = food }
+    fun onUsernameChange(value: String) {
+        _username.value = value
+    }
+
+    fun onEmailChange(value: String) {
+        _email.value = value
+    }
+
+    fun onLocationChange(value: String) {
+        _location.value = value
+    }
+
+    fun onPasswordChange(value: String) {
+        _password.value = value
+    }
+
+    fun onPasswordRepeatChange(value: String) {
+        _passwordRepeat.value = value
+    }
+
+    fun onFoodSelected(food: FoodDirection) {
+        _selectedFood.value = food
+    }
 
     fun submitPlayerRegistration() {
         if (_password.value == _passwordRepeat.value) {
@@ -95,7 +118,8 @@ class RegistrationViewModel : ViewModel() {
                 if (newId != -1L) {
                     _registrationState.value = RegistrationState.Success(newId)
                 } else {
-                    _registrationState.value = RegistrationState.Error("Die Registrierung ist fehlgeschlagen.")
+                    _registrationState.value =
+                        RegistrationState.Error("Die Registrierung ist fehlgeschlagen.")
                 }
             } catch (e: Exception) {
                 _registrationState.value = RegistrationState.Error(e.message ?: "Fehler!")

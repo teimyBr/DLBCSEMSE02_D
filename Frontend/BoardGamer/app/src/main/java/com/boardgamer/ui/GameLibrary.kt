@@ -11,25 +11,35 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.boardgamer.R
 import com.boardgamer.model.Game
 import com.boardgamer.viewmodel.GameLibraryViewModel
 
-//TODO move strings into strings.xml
 @Composable
-fun GameLibrary() {
+fun GameLibrary(navController: NavController) {
     val viewModel = viewModel<GameLibraryViewModel>()
-    val listValues = viewModel.gameFlow.collectAsState()
+    val listValues by viewModel.gameFlow.collectAsState()
+    val openDialog by viewModel.dialogOpen.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,7 +50,7 @@ fun GameLibrary() {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Spielebiblothek",
+                text = stringResource(R.string.game_lib_title),
                 modifier = Modifier.align(Alignment.CenterVertically),
                 style = MaterialTheme.typography.headlineLarge
             )
@@ -50,7 +60,7 @@ fun GameLibrary() {
             }) { Text("X") }
         }
         Text(
-            text = "Spiele die für zukünftige Events vorgeschlagen werden können",
+            text = stringResource(R.string.game_lib_subtitle),
             modifier = Modifier.padding(10.dp, 5.dp),
             style = MaterialTheme.typography.bodyLarge
         )
@@ -58,7 +68,7 @@ fun GameLibrary() {
         Row {
             Spacer(Modifier.weight(1f))
             Button(onClick = {
-                //Show a pop up that allows people Enter title + description of new game
+                viewModel.addGame()
             }) {
                 Text(
                     "+",
@@ -68,7 +78,7 @@ fun GameLibrary() {
                 )
                 Spacer(Modifier.width(10.dp))
                 Text(
-                    "Hinzufügen",
+                    stringResource(R.string.add),
                     modifier = Modifier,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -79,15 +89,20 @@ fun GameLibrary() {
                 .fillMaxSize()
                 .background(Color(159, 168, 218, 70))
         ) {
-            items(listValues.value) { game ->
-                GameItem(game, Modifier.fillMaxWidth())
+            items(listValues) { game ->
+                GameItem(game)
+            }
+        }
+        when {
+            openDialog -> {
+                AddGameDialog(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun GameItem(game: Game, modifier: Modifier = Modifier) {
+fun GameItem(game: Game) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -103,5 +118,57 @@ fun GameItem(game: Game, modifier: Modifier = Modifier) {
             modifier = Modifier,
             style = MaterialTheme.typography.bodyMedium
         )
+    }
+}
+
+@Composable
+fun AddGameDialog(viewModel: GameLibraryViewModel) {
+    val name by viewModel.newGameName.collectAsState()
+    val description by viewModel.newGameDesc.collectAsState()
+    val commitEnabled by viewModel.commitEnabled.collectAsState()
+    Dialog(
+        onDismissRequest = viewModel::dissmisNewGame
+    ) {
+        Card(
+            modifier = Modifier
+                .padding(16.dp),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Text(
+                    stringResource(R.string.add_game_title),
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = viewModel::nameChange,
+                    label = {
+                        Text(stringResource(R.string.add_game_name_label))
+                    }
+                )
+
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = viewModel::descriptionChange,
+                    label = {
+                        Text(stringResource(R.string.add_game_description_label))
+                    }
+                )
+
+                Row {
+                    TextButton(onClick = viewModel::dissmisNewGame) { Text(stringResource(R.string.cancel)) }
+                    Spacer(Modifier.weight(1f))
+                    TextButton(onClick = viewModel::commitNewGame, enabled = commitEnabled) {
+                        Text(
+                            stringResource(R.string.ok)
+                        )
+                    }
+                }
+            }
+        }
     }
 }
