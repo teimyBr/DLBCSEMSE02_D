@@ -6,7 +6,7 @@ import datetime
 from app import authenticate, register, getAppointments, addAppointment, updateAppointment
 from app import getGameSuggestions, addGameSuggestions, getGames, addGameVote, updateGameVote
 from app import getGameVotesForPlayer, getGameVotes, getFoodDirections, addFoodChoice, getFoodChoices
-from app import getFoodChoice, addEvaluation, getEvaluations, addMessage, getMessages
+from app import getFoodChoice, addEvaluation, getEvaluations, addMessage, getMessages, insertGame
 from app import model
 
 
@@ -283,6 +283,51 @@ async def test_get_games(mocker):
     # Assert
     assert result == games
     mock_session.execute.assert_awaited_once()
+
+@pytest.mark.asyncio
+async def test_insert_game_success(mocker):
+    # Arrange
+    mock_session = MagicMock()
+    mock_session.execute = AsyncMock()
+    mock_session.execute.return_value.scalar.return_value = 2  # max_id = 2
+    mock_session.commit = AsyncMock()
+    mock_session.refresh = AsyncMock()
+    mock_session.add = MagicMock()
+
+    game_data = model.GameCreate(name="Test Game", description="A test game")
+
+    # Act
+    result = await insertGame(game=game_data, session=mock_session)
+
+    # Assert
+    assert result == {"id": 3}
+    mock_session.execute.assert_awaited_once()
+    mock_session.add.assert_called_once()
+    mock_session.commit.assert_awaited_once()
+    mock_session.refresh.assert_awaited_once()
+
+@pytest.mark.asyncio
+async def test_insert_game_failure(mocker):
+    # Arrange
+    mock_session = MagicMock()
+    mock_session.execute = AsyncMock()
+    mock_session.execute.return_value.scalar.return_value = 5  # max_id = 5
+    mock_session.commit = AsyncMock(side_effect=Exception("DB Error"))
+    mock_session.refresh = AsyncMock()
+    mock_session.add = MagicMock()
+    mock_session.rollback = AsyncMock()
+
+    game_data = model.GameCreate(name="Test Game", description="A test game")
+
+    # Act
+    result = await insertGame(game=game_data, session=mock_session)
+
+    # Assert
+    assert result == {"id": -1}
+    mock_session.execute.assert_awaited_once()
+    mock_session.add.assert_called_once()
+    mock_session.commit.assert_awaited_once()
+    mock_session.rollback.assert_awaited_once()
 
 @pytest.mark.asyncio
 async def test_add_game_vote_success(mocker):
