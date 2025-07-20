@@ -155,7 +155,7 @@ async def getGames(session: AsyncSession = Depends(get_session)):
     return result.scalars().all()
 
 @router.post("/game/insert", response_model=dict)
-async def insert_game(game: model.GameCreate, session: AsyncSession = Depends(get_session)):
+async def insertGame(game: model.GameCreate, session: AsyncSession = Depends(get_session)):
     logging.info("Insert game")
     # Nächste freie ID bestimmen
     result = await session.execute(select(func.max(model.Game.id)))
