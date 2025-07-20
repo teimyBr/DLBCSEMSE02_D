@@ -8,6 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import com.boardgamer.R
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
 sealed interface LoginState {
     data object Idle : LoginState
@@ -16,13 +21,34 @@ sealed interface LoginState {
     data class Error(val message: String) : LoginState
 }
 
-class LoginViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
     private val backend = BackendAPI()
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState = _loginState.asStateFlow()
 
-    fun loginUser(name: String, password: String) {
+    private val _username = MutableStateFlow("")
+    val username = _username.asStateFlow()
+
+    private val _password = MutableStateFlow("")
+    val password = _password.asStateFlow()
+
+    val isLoginButtonEnabled: StateFlow<Boolean> =
+        combine(username, password, loginState) { username, password, loginState ->
+            username.isNotBlank() && password.isNotBlank() && loginState !is LoginState.Loading
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false
+        )
+
+    fun onUsernameChange(value: String) { _username.value = value }
+
+    fun onPasswordChange(value: String) { _password.value = value }
+    fun loginPlayer() {
+        val name = _username.value
+        val password = _password.value
+
         if (name.isBlank() || password.isBlank()) {
             _loginState.value = LoginState.Error("Benutzername und Passwort eingeben!")
             return
@@ -34,7 +60,7 @@ class LoginViewModel : ViewModel() {
                 val player = backend.authenticate(name, password)
                 _loginState.value = LoginState.Success(player)
             } catch (e: Exception) {
-                _loginState.value = LoginState.Error("Amneldung fehlgeschlagen - Name oder Passwort falsch.")
+                _loginState.value = LoginState.Error("Anmeldung fehlgeschlagen - Name oder Passwort falsch.")
             }
         }
     }
