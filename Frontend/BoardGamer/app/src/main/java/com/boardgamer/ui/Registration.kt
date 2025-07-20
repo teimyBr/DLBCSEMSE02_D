@@ -10,32 +10,35 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.boardgamer.model.FoodDirection
 import com.boardgamer.viewmodel.RegistrationState
 import com.boardgamer.viewmodel.RegistrationViewModel
+import com.boardgamer.R
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Registration(navController: NavController) {
 
     val viewModel: RegistrationViewModel = viewModel()
-    val registrationState by viewModel.registrationState.collectAsState()
-    val foodDirections = viewModel.foodDirections
 
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordRepeat by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
-    var passwordsDoNotMatch by remember { mutableStateOf(false) }
+    val registrationState by viewModel.registrationState.collectAsState()
+    val username by viewModel.username.collectAsState()
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
+    val passwordRepeat by viewModel.passwordRepeat.collectAsState()
+    val location by viewModel.location.collectAsState()
+    val passwordsDoNotMatch by viewModel.passwordsDoNotMatch.collectAsState()
+    val selectedFood by viewModel.selectedFood.collectAsState()
+
+    val foodDirections by viewModel.foodDirections.collectAsState()
     var isFoodDropdownExpanded by remember { mutableStateOf(false) }
-    var selectedFood by remember { mutableStateOf<FoodDirection?>(null) }
 
     LaunchedEffect(key1 = registrationState) {
         if (registrationState is RegistrationState.Success) {
@@ -66,7 +69,7 @@ fun Registration(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Registriere dich für BoardGamer",
+                text = stringResource(id = R.string.register_for_boardgamer),
                 textAlign = TextAlign.Center,
                 fontSize = 25.sp
             )
@@ -75,8 +78,12 @@ fun Registration(navController: NavController) {
 
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it },
-                label = { Text("Name") },
+                onValueChange = { viewModel.onUsernameChange(it) },
+                label = {
+                    Text(
+                        text= stringResource(R.string.name)
+                    )
+                },
                 enabled = registrationState !is RegistrationState.Loading
             )
 
@@ -84,8 +91,12 @@ fun Registration(navController: NavController) {
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
-                label = { Text("E-Mail") },
+                onValueChange = { viewModel.onEmailChange(it) },
+                label = {
+                    Text(
+                        text= stringResource(R.string.email)
+                    )
+                },
                 enabled = registrationState !is RegistrationState.Loading
             )
 
@@ -93,8 +104,12 @@ fun Registration(navController: NavController) {
 
             OutlinedTextField(
                 value = location,
-                onValueChange = { location = it },
-                label = { Text("Wohnort") },
+                onValueChange = { viewModel.onLocationChange(it) },
+                label = {
+                    Text(
+                        text= stringResource(R.string.location)
+                    )
+                },
                 enabled = registrationState !is RegistrationState.Loading
             )
 
@@ -108,7 +123,10 @@ fun Registration(navController: NavController) {
                     value = selectedFood?.designation ?: "",
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Bevorzugtes Essen") },
+                    label = {
+                        Text(
+                        stringResource(id = R.string.favourite_food)
+                    )},
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isFoodDropdownExpanded) },
                     modifier = Modifier.menuAnchor(),
                     enabled = registrationState !is RegistrationState.Loading
@@ -121,7 +139,7 @@ fun Registration(navController: NavController) {
                         DropdownMenuItem(
                             text = { Text(food.designation) },
                             onClick = {
-                                selectedFood = food
+                                viewModel.onFoodSelected(food)
                                 isFoodDropdownExpanded = false
                             }
                         )
@@ -133,8 +151,12 @@ fun Registration(navController: NavController) {
 
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
-                label = { Text("Passwort") },
+                onValueChange = { viewModel.onPasswordChange(it) },
+                label = {
+                    Text(
+                        text= stringResource(R.string.password)
+                    )
+                },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = passwordsDoNotMatch,
                 enabled = registrationState !is RegistrationState.Loading
@@ -144,11 +166,19 @@ fun Registration(navController: NavController) {
 
             OutlinedTextField(
                 value = passwordRepeat,
-                onValueChange = { passwordRepeat = it },
-                label = { Text("Passwort wiederholen") },
+                onValueChange = { viewModel.onPasswordRepeatChange(it) },
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.password_repeat)
+                    )
+                },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = passwordsDoNotMatch,
-                supportingText = { if (passwordsDoNotMatch) Text("Die Passwörter stimmen nicht überein!") },
+                supportingText = { if (passwordsDoNotMatch)
+                    Text(
+                        text = stringResource(id = R.string.passwordsDoNotMatch)
+                    )
+                },
                 enabled = registrationState !is RegistrationState.Loading
             )
 
@@ -163,29 +193,16 @@ fun Registration(navController: NavController) {
             }
 
             Button(
-                onClick = {
-                    if (password == passwordRepeat) {
-                        passwordsDoNotMatch = false
-                        selectedFood?.let { food ->
-                            viewModel.registerUser(
-                                name = username,
-                                email = email,
-                                password = password,
-                                favouriteFoodId = food.id,
-                                location = location
-                            )
-                        }
-                    } else {
-                        passwordsDoNotMatch = true
-                    }
-                },
+                onClick = { viewModel.submitPlayerRegistration() },
                 shape = RectangleShape,
                 enabled = registrationState !is RegistrationState.Loading && username.isNotBlank() && location.isNotBlank() && selectedFood != null
             ) {
                 if (registrationState is RegistrationState.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                 } else {
-                    Text("Registrieren")
+                    Text(
+                        text = stringResource(R.string.registration)
+                    )
                 }
             }
         }

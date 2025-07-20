@@ -23,26 +23,72 @@ class RegistrationViewModel : ViewModel() {
     private val _registrationState = MutableStateFlow<RegistrationState>(RegistrationState.Idle)
     val registrationState = _registrationState.asStateFlow()
 
-    val foodDirections: List<FoodDirection> = listOf(
-        FoodDirection(id = 1, designation = "Italienisch"),
-        FoodDirection(id = 2, designation = "Griechisch"),
-        FoodDirection(id = 3, designation = "Deutsch"),
-        FoodDirection(id = 4, designation = "Türkisch"),
-        FoodDirection(id = 5, designation = "Amerikanisch"),
-        FoodDirection(id = 6, designation = "Asiatisch"),
-        FoodDirection(id = 7, designation = "Egal")
-    )
+    private val _username = MutableStateFlow("")
+    val username = _username.asStateFlow()
 
-    fun registerUser(name: String, email: String, password: String, favouriteFoodId: Long, location: String) {
+    private val _email = MutableStateFlow("")
+    val email = _email.asStateFlow()
+
+    private val _location = MutableStateFlow("")
+    val location = _location.asStateFlow()
+
+    private val _password = MutableStateFlow("")
+    val password = _password.asStateFlow()
+
+    private val _passwordRepeat = MutableStateFlow("")
+    val passwordRepeat = _passwordRepeat.asStateFlow()
+
+    private val _selectedFood = MutableStateFlow<FoodDirection?>(null)
+    val selectedFood = _selectedFood.asStateFlow()
+
+    private val _passwordsDoNotMatch = MutableStateFlow(false)
+    val passwordsDoNotMatch = _passwordsDoNotMatch.asStateFlow()
+
+    private val _foodDirections = MutableStateFlow<List<FoodDirection>>(emptyList())
+    val foodDirections = _foodDirections.asStateFlow()
+
+    init {
+        loadFoodDirections()
+    }
+
+    private fun loadFoodDirections() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _foodDirections.value = backend.getFoodDirections()
+            } catch (e: Exception) {
+                _registrationState.value = RegistrationState.Error("Essensrichtungen konnten nicht geladen werden!")
+            }
+        }
+    }
+
+    fun onUsernameChange(value: String) { _username.value = value }
+    fun onEmailChange(value: String) { _email.value = value }
+    fun onLocationChange(value: String) { _location.value = value }
+    fun onPasswordChange(value: String) { _password.value = value }
+    fun onPasswordRepeatChange(value: String) { _passwordRepeat.value = value }
+    fun onFoodSelected(food: FoodDirection) { _selectedFood.value = food }
+
+    fun submitPlayerRegistration() {
+        if (_password.value == _passwordRepeat.value) {
+            _passwordsDoNotMatch.value = false
+            _selectedFood.value?.let {
+                registerPlayer()
+            }
+        } else {
+            _passwordsDoNotMatch.value = true
+        }
+    }
+
+    private fun registerPlayer() {
         viewModelScope.launch(Dispatchers.IO) {
             _registrationState.value = RegistrationState.Loading
             try {
                 val player = RegistrationPlayer(
-                    name = name,
-                    email = email,
-                    password = password,
-                    favouriteFoodId = favouriteFoodId,
-                    location = location
+                    name = _username.value,
+                    email = _email.value,
+                    password = _password.value,
+                    favouriteFoodId = _selectedFood.value!!.id,
+                    location = _location.value
                 )
                 val newId = backend.register(player)
 
