@@ -224,7 +224,7 @@ INSERT INTO food_choice (id, player_id, appointment_id, food_direction_id) VALUE
   (4, 4, 2, 4),
   (5, 2, 2, 5),
   (6, 5, 3, 6),
-  (7, 1, 3, 7)
+  (7, 1, 3, 7);
 
 -- delivery_service
 INSERT INTO delivery_service (id, service_name, service_location, food_direction_id) VALUES
