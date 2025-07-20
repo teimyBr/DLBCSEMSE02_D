@@ -25,6 +25,11 @@ class Appointment(Base):
     location = Column(String(50))
     host_id = Column(Integer, ForeignKey("player.id"))
 
+class PlayerAppointment(Base):
+    __tablename__ = "player_appointment"
+    player_id = Column(Integer, ForeignKey("player.id"), primary_key=True)
+    appointment_id = Column(Integer, ForeignKey("appointment.id"), primary_key=True)
+
 class Game(Base):
     __tablename__ = "game"
     id = Column(Integer, primary_key=True)
@@ -102,6 +107,16 @@ class AppointmentOut(BaseModel):
     timestamp: datetime
     location: str
     host_id: int
+    class Config:
+        orm_mode = True
+
+class PlayerAppointmentCreate(BaseModel):
+    player_id: int
+    appointment_id: int
+
+class PlayerAppointmentOut(BaseModel):
+    player_id: int
+    appointment_id: int
     class Config:
         orm_mode = True
 
