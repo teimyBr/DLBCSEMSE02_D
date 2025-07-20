@@ -1,8 +1,22 @@
 package com.boardgamer.ui
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -12,11 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.boardgamer.viewmodel.LoginState
-import com.boardgamer.viewmodel.HomeViewModel
 import com.boardgamer.R
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.boardgamer.viewmodel.HomeViewModel
+import com.boardgamer.viewmodel.LoginState
+import com.boardgamer.viewmodel.RegistrationViewModel
 
 @Composable
 fun Home(navController: NavController) {
@@ -95,7 +108,10 @@ fun Home(navController: NavController) {
                 enabled = isButtonEnabled
             ) {
                 if (loginState is LoginState.Loading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 } else {
                     Text(
                         text = stringResource(id = R.string.login)
@@ -122,7 +138,7 @@ fun Home(navController: NavController) {
             Spacer(modifier = Modifier.height(4.dp))
 
             Button(
-                onClick = { navController.navigate("registration") },
+                onClick = { navController.navigate(RegistrationViewModel.SCREEN_NAME) },
                 shape = RectangleShape
             ) {
                 Text(

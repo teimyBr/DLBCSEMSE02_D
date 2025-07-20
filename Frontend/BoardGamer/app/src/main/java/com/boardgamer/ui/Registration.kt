@@ -1,12 +1,36 @@
 package com.boardgamer
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -19,7 +43,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.viewmodel.RegistrationState
 import com.boardgamer.viewmodel.RegistrationViewModel
-import com.boardgamer.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +76,7 @@ fun Registration(navController: NavController) {
                 title = { Text("") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.Close, "Zurück zum Startbildschirm")
+                        Icon(Icons.Default.Close, stringResource(R.string.back_to_home))
                     }
                 }
             )
@@ -81,7 +104,7 @@ fun Registration(navController: NavController) {
                 onValueChange = { viewModel.onUsernameChange(it) },
                 label = {
                     Text(
-                        text= stringResource(R.string.name)
+                        text = stringResource(R.string.name)
                     )
                 },
                 enabled = registrationState !is RegistrationState.Loading
@@ -94,7 +117,7 @@ fun Registration(navController: NavController) {
                 onValueChange = { viewModel.onEmailChange(it) },
                 label = {
                     Text(
-                        text= stringResource(R.string.email)
+                        text = stringResource(R.string.email)
                     )
                 },
                 enabled = registrationState !is RegistrationState.Loading
@@ -107,7 +130,7 @@ fun Registration(navController: NavController) {
                 onValueChange = { viewModel.onLocationChange(it) },
                 label = {
                     Text(
-                        text= stringResource(R.string.location)
+                        text = stringResource(R.string.location)
                     )
                 },
                 enabled = registrationState !is RegistrationState.Loading
@@ -125,8 +148,9 @@ fun Registration(navController: NavController) {
                     readOnly = true,
                     label = {
                         Text(
-                        stringResource(id = R.string.favourite_food)
-                    )},
+                            stringResource(id = R.string.favourite_food)
+                        )
+                    },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isFoodDropdownExpanded) },
                     modifier = Modifier.menuAnchor(),
                     enabled = registrationState !is RegistrationState.Loading
@@ -154,7 +178,7 @@ fun Registration(navController: NavController) {
                 onValueChange = { viewModel.onPasswordChange(it) },
                 label = {
                     Text(
-                        text= stringResource(R.string.password)
+                        text = stringResource(R.string.password)
                     )
                 },
                 visualTransformation = PasswordVisualTransformation(),
@@ -174,10 +198,11 @@ fun Registration(navController: NavController) {
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = passwordsDoNotMatch,
-                supportingText = { if (passwordsDoNotMatch)
-                    Text(
-                        text = stringResource(id = R.string.passwordsDoNotMatch)
-                    )
+                supportingText = {
+                    if (passwordsDoNotMatch)
+                        Text(
+                            text = stringResource(id = R.string.passwordsDoNotMatch)
+                        )
                 },
                 enabled = registrationState !is RegistrationState.Loading
             )
@@ -198,7 +223,10 @@ fun Registration(navController: NavController) {
                 enabled = registrationState !is RegistrationState.Loading && username.isNotBlank() && location.isNotBlank() && selectedFood != null
             ) {
                 if (registrationState is RegistrationState.Loading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 } else {
                     Text(
                         text = stringResource(R.string.registration)
