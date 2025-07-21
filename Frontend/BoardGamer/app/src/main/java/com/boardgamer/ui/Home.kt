@@ -42,11 +42,7 @@ fun Home(navController: NavController) {
 
     LaunchedEffect(loginState) {
         if (loginState is LoginState.Success) {
-
-            //Sobald die Anmeldung erfolgreich war, geht es ab hier weiter zur App
-            //z.B. zum "Aktuelles"-Screen
-
-            navController.navigate("Aktuelles") {
+            navController.navigate("CurrentEvents") {
                 popUpTo("Home") { inclusive = true }
             }
             viewModel.resetState()
