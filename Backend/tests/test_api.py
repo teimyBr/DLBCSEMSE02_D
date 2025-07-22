@@ -7,7 +7,7 @@ from app import authenticate, register, getAppointments, addAppointment, updateA
 from app import getGameSuggestions, addGameSuggestions, getGames, addGameVote, updateGameVote
 from app import getGameVotesForPlayer, getGameVotes, getFoodDirections, addFoodChoice, getFoodChoices
 from app import getFoodChoice, addEvaluation, getEvaluations, addMessage, getMessages, insertGame
-from app import getPlayerAppointments, addPlayerAppointment
+from app import getPlayerAppointments, addPlayerAppointment, getPlayer
 from app import model
 
 
@@ -117,6 +117,48 @@ async def test_register_success(mocker):
     mock_session.add.assert_called_once()
     mock_session.commit.assert_awaited_once()
     mock_session.refresh.assert_awaited_once()
+
+@pytest.mark.asyncio
+async def test_get_player_found(mocker):
+    # Arrange
+    player_id = 1
+    player_obj = model.Player(
+        id=1,
+        name="Test",
+        email="test@example.com",
+        password="secret",
+        location="Earth",
+        favourite_food_id=1
+    )
+    mock_session = MagicMock()
+    mock_result = MagicMock()
+    mock_result.scalar_one_or_none = AsyncMock(return_value=player_obj)
+    mock_session.execute = AsyncMock(return_value=mock_result)
+
+    # Act
+    result = await getPlayer(player_id, session=mock_session)
+
+    # Assert
+    assert result.id == player_obj.id
+    assert result.name == player_obj.name
+    assert result.email == player_obj.email
+    assert result.location == player_obj.location
+    assert result.favourite_food_id == player_obj.favourite_food_id
+
+@pytest.mark.asyncio
+async def test_get_player_not_found(mocker):
+    # Arrange
+    player_id = 999
+    mock_session = MagicMock()
+    mock_result = MagicMock()
+    mock_result.scalar_one_or_none = AsyncMock(return_value=None)
+    mock_session.execute = AsyncMock(return_value=mock_result)
+
+    # Act & Assert
+    with pytest.raises(HTTPException) as exc_info:
+        await getPlayer(player_id, session=mock_session)
+    assert exc_info.value.status_code == 404
+    assert exc_info.value.detail == "Player not found"
 
 @pytest.mark.asyncio
 async def test_get_appointments(mocker):

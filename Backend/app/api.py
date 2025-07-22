@@ -74,6 +74,16 @@ async def register(player: model.PlayerCreate, session: AsyncSession = Depends(g
     logging.info(f"User registered successfully: {player.email} (ID: {new_id})")
     return {"id": new_player.id}
 
+@router.get("/player/{player_id}", response_model=model.PlayerOut)
+async def getPlayer(player_id: int, session: AsyncSession = Depends(get_session)):
+    result = await session.execute(
+        select(model.Player).where(model.Player.id == player_id)
+    )
+    player = result.scalar_one_or_none()
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+    return player
+
 @router.get("/appointments", response_model=List[model.AppointmentOut])
 async def getAppointments(session: AsyncSession = Depends(get_session)):
     logging.info("Fetching latest 5 appointments")
