@@ -31,6 +31,12 @@ class ApiTest {
     }
 
     @Test
+    fun getPlayer() {
+        val player = runBlocking { backend.getPlayer(1) }
+        assert(player != null) { "Expected to retrieve player" }
+    }
+
+    @Test
     fun getAppointments() {
         val appointments = runBlocking { backend.getAppointments() }
         assert(appointments.size == 2) { "Expected two appointments got: $appointments" }
