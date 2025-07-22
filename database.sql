@@ -154,7 +154,8 @@ INSERT INTO appointment (id, date, timestamp, location, host_id) VALUES
   (1, '2024-07-01', '2024-07-01 18:00:00', 'Berlin', 1),
   (2, '2024-07-15', '2024-07-15 19:00:00', 'Hamburg', 2),
   (3, '2024-08-05', '2024-08-05 17:30:00', 'München', 3),
-  (4, '2024-08-20', '2024-08-20 20:00:00', 'Köln', 4);
+  (4, '2024-08-20', '2024-08-20 20:00:00', 'Köln', 4),
+  (5, '2024-09-01', '2024-09-01 19:00:00', 'Berlin', 1);
 
 -- player_appointment
 INSERT INTO player_appointment (player_id, appointment_id) VALUES

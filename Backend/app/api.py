@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import (
-    Column, Integer, String, Boolean, Date, Text, ForeignKey, Numeric, TIMESTAMP, select, insert, update
+    Column, Integer, String, Boolean, Date, Text, ForeignKey, Numeric, TIMESTAMP, select, func, insert, update
 )
 from sqlalchemy import func
 
@@ -83,6 +83,30 @@ async def getPlayer(player_id: int, session: AsyncSession = Depends(get_session)
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")
     return player
+
+@router.get("/isNextHost/{player_id}", response_model=bool)
+async def isNextHost(player_id: int, session: AsyncSession = Depends(get_session)):
+    # Zähle, wie viele Termine der Spieler veranstaltet hat
+    result = await session.execute(
+        select(func.count()).select_from(model.Appointment).where(model.Appointment.host_id == player_id)
+    )
+    player_count = result.scalar_one()
+
+    # Subquery: Zähle die Termine pro Host
+    subquery = (
+        select(model.Appointment.host_id, func.count().label("count_"))
+        .group_by(model.Appointment.host_id)
+        .subquery()
+    )
+
+    # Finde die minimale Anzahl an Terminen, die ein beliebiger Spieler veranstaltet hat
+    result = await session.execute(
+        select(func.min(subquery.c.count_))
+    )
+    min_count = result.scalar_one()
+
+    # Wenn der Spieler keine oder gleich viele Termine wie der mit den wenigsten hat
+    return player_count <= min_count
 
 @router.get("/appointments", response_model=List[model.AppointmentOut])
 async def getAppointments(session: AsyncSession = Depends(get_session)):
