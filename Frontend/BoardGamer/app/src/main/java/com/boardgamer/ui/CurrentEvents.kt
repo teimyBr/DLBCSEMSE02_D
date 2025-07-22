@@ -1,10 +1,12 @@
 package com.boardgamer.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -12,27 +14,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.boardgamer.R
 import com.boardgamer.model.Appointment
 import com.boardgamer.viewmodel.AppointmentsState
 import com.boardgamer.viewmodel.CurrentEventsViewModel
 import kotlinx.datetime.number
 import java.time.format.DateTimeFormatter
 import kotlin.time.ExperimentalTime
-
-/*
-Noch zu erledigen:
-- HostID durch Namen tauschen
-- Strings anpassen
-- Funktion Profil aufrufen implementieren
-- Funktion Event bewerten implementieren
-- Funktionen zum Anzeigen von Spielevent-Infos und zum Teilnehmen implementieren
-- BottomBar optisch anpassen und die Funktion GameLibrary ergänzen und Neues Treffen implementieren
-- Colors anpassen
- */
 
 fun kotlinx.datetime.LocalDate.toJavaLocalDate(): java.time.LocalDate =
     java.time.LocalDate.of(year, month.number, day)
@@ -49,28 +44,69 @@ fun CurrentEvents(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Aktuelles") },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.current_events)
+                ) },
                 actions = {
-                    IconButton(onClick = { /* Hier kommt der Code zum Aufrufen des eigenen Profils rein */ }) {
-                        Icon(Icons.Default.Person, contentDescription = "Profil")
+                    IconButton(onClick = {
+
+                    // Hier kommt der Code zum Aufrufen des eigenen Profils rein
+
+                    }) {
+                        Icon(Icons.Default.Person, contentDescription = stringResource(id = R.string.profile))
                     }
                 }
             )
         },
         bottomBar = {
-            BottomAppBar(modifier = Modifier.height(60.dp)) {
+            BottomAppBar{
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.SpaceAround,
                 ) {
-                    Button(onClick = { /* Code zum ERstellen eines Treffens */ }) {
-                        Icon(Icons.Default.Add, contentDescription = "Neues Treffen")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Neues Treffen")
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable {
+
+                            //Code fürs Treffen erstellen
+
+                            }
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(id = R.string.new_event)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.new_event),
+                            fontSize = 12.sp
+                        )
                     }
-                    TextButton(onClick = { /* Code zum Anzeigen der GameLibrary */ }) {
-                        Text("Spielebibliothek")
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable {
+
+                                // Code um zur GameLibrary zu navigieren
+
+                            }
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = stringResource(id = R.string.game_lib_title)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.game_lib_title),
+                            fontSize = 12.sp
+                        )
                     }
                 }
             }
@@ -90,8 +126,7 @@ fun CurrentEvents(navController: NavController) {
                 }
                 is AppointmentsState.Error -> {
                     Text(
-                        text = state.message,
-                        color = MaterialTheme.colorScheme.error,
+                        text = stringResource(id = state.messageResId),
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(16.dp)
@@ -126,50 +161,59 @@ fun AppointmentCard(appointment: Appointment) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isPast){
-                MaterialTheme.colorScheme.surfaceContainer
-            } else{
-                MaterialTheme.colorScheme.surfaceVariant
-            }
-        )
+
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+
             // Hier muss ich noch die HostID durch den Hostnamen austauschen - erstmal nur PLatzhalter
+
             Text(
-                text = "Nächstes Treffen bei Host ${appointment.hostId}",
+                text = stringResource(id = R.string.next_event_hostname, appointment.hostId),
                 style = MaterialTheme.typography.titleLarge
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Datum: ${appointment.date.toJavaLocalDate().format(dateFormatter)}")
-            Text("Uhrzeit: ${appointment.timestamp.toJavaLocalDateTime().format(timeFormatter)} Uhr")
-            Text("Ort: ${appointment.location}")
+            Text(
+                text = stringResource(id = R.string.event_date, appointment.date.toJavaLocalDate().format(dateFormatter)
+                )
+            )
+            Text(
+                text = stringResource(id = R.string.event_time,appointment.timestamp.toJavaLocalDateTime().format(timeFormatter)
+                )
+            )
+            Text(
+                text = stringResource(id = R.string.event_location, appointment.location)
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             if (isPast) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                     Surface(
-                        color = MaterialTheme.colorScheme.inverseSurface,
-                        shape = MaterialTheme.shapes.medium,
                         modifier = Modifier.padding(vertical = 4.dp)
-                    ) {
+
+                        ) {
                         Text(
-                            text = "Dieses Event liegt in der Vergangenheit",
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            text = stringResource(id = R.string.event_isPast),
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
-                        onClick = { /* Hier noch der Code um das Event anschließend bewerten zz können */ },
+                        onClick = {
+
+                        //Hier noch der Code um das Event anschließend bewerten zu können
+
+                        },
                         shape = RectangleShape,
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            containerColor = Color(0xFF4CAF50)
                         )
+
                     ) {
-                        Text("Bewertung abgeben")
+                        Text(
+                            text = stringResource(id = R.string.event_set_evaluation)
+                        )
                     }
                 }
             } else {
@@ -177,15 +221,27 @@ fun AppointmentCard(appointment: Appointment) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Button(onClick = { /* Code zum Anzeigen weiterer Informationen kommen hier hin */ },
+                    Button(onClick = {
+
+                    //Code zum Anzeigen weiterer Informationen kommen hier hin
+
+                    },
                         modifier = Modifier.weight(1f),
                         shape = RectangleShape) {
-                        Text("Infos")
+                        Text(
+                            text = stringResource(id = R.string.event_show_informations)
+                        )
                     }
-                    Button(onClick = { /* Code, um an einem Event teilzunehmen */ },
+                    Button(onClick = {
+
+                    //Code, um an einem Event teilzunehmen
+
+                    },
                         modifier = Modifier.weight(1f),
                         shape = RectangleShape) {
-                        Text("Teilnehmen")
+                        Text(
+                            text = stringResource(id = R.string.event_participate)
+                        )
                     }
                 }
             }

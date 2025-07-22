@@ -11,6 +11,19 @@
     <string name="passwordsDoNotMatch">Die Passwörter stimmen nicht überein!</string>
     <string name="back_to_home">Zurück zum Startbildschirm</string>
 
+    <string name="new_event">Neues Treffen</string>
+    <string name="next_event_hostname">Nächstes Treffen bei Host %1$s</string>
+    <string name="event_isPast">Dieses Event liegt in der Vergangenheit</string>
+    <string name="event_date">Datum: %1$s</string>
+    <string name="event_time">Uhrzeit: %1$s Uhr</string>
+    <string name="event_location">Ort: %1$s</string>
+    <string name="event_set_evaluation">Bewertung abgeben</string>
+    <string name="event_show_informations">Infos</string>
+    <string name="event_participate">Teilnehmen</string>
+
+    <string name="profile">Profil</string>
+    <string name="current_events">Aktuelles</string>
+    <string name="error_loading_appointments">Fehler beim Laden der Termine.</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="location">Wohnort</string>

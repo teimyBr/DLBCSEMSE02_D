@@ -1,7 +1,9 @@
 package com.boardgamer.viewmodel
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boardgamer.R
 import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Appointment
 import kotlinx.coroutines.Dispatchers
@@ -9,16 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/*
-Noch zu erledigen:
-- Error-String anpassen
-
- */
-
 sealed interface AppointmentsState {
     data object Loading : AppointmentsState
     data class Success(val appointments: List<Appointment>) : AppointmentsState
-    data class Error(val message: String) : AppointmentsState
+    data class Error(@StringRes val messageResId: Int) : AppointmentsState
 }
 
 class CurrentEventsViewModel : ViewModel() {
@@ -42,7 +38,7 @@ class CurrentEventsViewModel : ViewModel() {
                 val appointments = backend.getAppointments()
                 _appointmentsState.value = AppointmentsState.Success(appointments)
             } catch (e: Exception) {
-                _appointmentsState.value = AppointmentsState.Error("Fehler beim Laden der Termine.")
+                _appointmentsState.value = AppointmentsState.Error(R.string.error_loading_appointments)
             }
         }
     }
