@@ -7,7 +7,7 @@ from app import authenticate, register, getAppointments, addAppointment, updateA
 from app import getGameSuggestions, addGameSuggestions, getGames, addGameVote, updateGameVote
 from app import getGameVotesForPlayer, getGameVotes, getFoodDirections, addFoodChoice, getFoodChoices
 from app import getFoodChoice, addEvaluation, getEvaluations, addMessage, getMessages, insertGame
-from app import getPlayerAppointments, addPlayerAppointment, getPlayer
+from app import getPlayerAppointments, addPlayerAppointment, getPlayer, isNextHost
 from app import model
 
 
@@ -159,6 +159,47 @@ async def test_get_player_not_found(mocker):
         await getPlayer(player_id, session=mock_session)
     assert exc_info.value.status_code == 404
     assert exc_info.value.detail == "Player not found"
+
+@pytest.mark.asyncio
+async def test_is_next_host_player_has_least_appointments(mocker):
+    # Arrange
+    mock_session = MagicMock()
+    # Spieler hat 2 Termine
+    mock_result_player = MagicMock()
+    mock_result_player.scalar_one.return_value = 2
+    # Mindestens ein Spieler hat 2 Termine
+    mock_result_min = MagicMock()
+    mock_result_min.scalar_one.return_value = 2
+
+    # Reihenfolge der execute-Calls beachten!
+    mock_session.execute = AsyncMock(side_effect=[mock_result_player, mock_result_min])
+
+    # Act
+    result = await isNextHost(player_id=1, session=mock_session)
+
+    # Assert
+    assert result is True
+    assert mock_session.execute.await_count == 2
+
+@pytest.mark.asyncio
+async def test_is_next_host_player_has_more_appointments(mocker):
+    # Arrange
+    mock_session = MagicMock()
+    # Spieler hat 3 Termine
+    mock_result_player = MagicMock()
+    mock_result_player.scalar_one.return_value = 3
+    # Mindestens ein Spieler hat 2 Termine
+    mock_result_min = MagicMock()
+    mock_result_min.scalar_one.return_value = 2
+
+    mock_session.execute = AsyncMock(side_effect=[mock_result_player, mock_result_min])
+
+    # Act
+    result = await isNextHost(player_id=1, session=mock_session)
+
+    # Assert
+    assert result is False
+    assert mock_session.execute.await_count == 2
 
 @pytest.mark.asyncio
 async def test_get_appointments(mocker):
