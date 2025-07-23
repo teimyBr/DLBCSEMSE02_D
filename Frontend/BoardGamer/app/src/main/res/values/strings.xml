@@ -40,4 +40,5 @@
     <string name="cancel">Abbrechen</string>
     <string name="add_game_failure">Konnte Spiel nicht erstellen</string>
     <string name="add_game_success">Spiel erfolgreich erstellt</string>
+
 </resources>
