@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,12 +20,17 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.R
-import com.boardgamer.model.Appointment
+import com.boardgamer.viewmodel.AppointmentDetails
 import com.boardgamer.viewmodel.AppointmentsState
 import com.boardgamer.viewmodel.CurrentEventsViewModel
+import com.boardgamer.viewmodel.GameLibraryViewModel
+import com.boardgamer.viewmodel.NewAppointmentViewModel
 import kotlinx.datetime.number
 import java.time.format.DateTimeFormatter
 import kotlin.time.ExperimentalTime
@@ -40,6 +46,21 @@ fun kotlinx.datetime.LocalDateTime.toJavaLocalDateTime(): java.time.LocalDateTim
 fun CurrentEvents(navController: NavController) {
     val viewModel: CurrentEventsViewModel = viewModel()
     val appointmentsState by viewModel.appointmentsState.collectAsState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.refreshAppointments()
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -71,9 +92,7 @@ fun CurrentEvents(navController: NavController) {
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-
-                            //Code fürs Treffen erstellen
-
+                                navController.navigate(NewAppointmentViewModel.SCREEN_NAME)
                             }
                             .padding(vertical = 8.dp)
                     ) {
@@ -94,7 +113,7 @@ fun CurrentEvents(navController: NavController) {
                             .weight(1f)
                             .clickable {
 
-                                // Code um zur GameLibrary zu navigieren
+                                navController.navigate(GameLibraryViewModel.SCREEN_NAME)
 
                             }
                             .padding(vertical = 8.dp)
@@ -138,20 +157,21 @@ fun CurrentEvents(navController: NavController) {
 }
 
 @Composable
-fun AppointmentList(appointments: List<Appointment>) {
+fun AppointmentList(appointments: List<AppointmentDetails>) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(appointments) { appointment ->
-            AppointmentCard(appointment = appointment)
+        items(appointments) { appointmentDetails ->
+            AppointmentCard(appointmentDetails = appointmentDetails)
         }
     }
 }
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun AppointmentCard(appointment: Appointment) {
+fun AppointmentCard(appointmentDetails: AppointmentDetails) {
+    val appointment = appointmentDetails.appointment
     val today = java.time.LocalDate.now()
     val isPast = appointment.date.toJavaLocalDate() < today
 
@@ -165,13 +185,12 @@ fun AppointmentCard(appointment: Appointment) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
-            // Hier muss ich noch die HostID durch den Hostnamen austauschen - erstmal nur PLatzhalter
-
             Text(
-                text = stringResource(id = R.string.next_event_hostname, appointment.hostId),
-                style = MaterialTheme.typography.titleLarge
+                text = stringResource(id = R.string.next_event_hostname, appointmentDetails.hostName),
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 text = stringResource(id = R.string.event_date, appointment.date.toJavaLocalDate().format(dateFormatter)
                 )
