@@ -22,7 +22,6 @@ sealed interface SaveState {
 }
 
 class NewAppointmentViewModel : ViewModel() {
-
     companion object {
         const val SCREEN_NAME = "NewAppointment"
     }

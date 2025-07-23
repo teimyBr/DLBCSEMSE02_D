@@ -32,7 +32,6 @@ fun NewAppointment(navController: NavController) {
     val customLocation by viewModel.customLocation.collectAsState()
     val saveState by viewModel.saveState.collectAsState()
 
-
     LaunchedEffect(saveState) {
         if (saveState is SaveState.Success) {
             viewModel.resetSaveState()

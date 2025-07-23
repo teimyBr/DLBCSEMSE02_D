@@ -41,4 +41,20 @@
     <string name="add_game_failure">Konnte Spiel nicht erstellen</string>
     <string name="add_game_success">Spiel erfolgreich erstellt</string>
 
+    <string name="error_location_empty">Es muss eine Location angegeben werden!</string>
+    <string name="error_saving_appointment">Fehler beim Speichern!</string>
+    <string name="error_invalid_date_time">Falsches Datumsformat!</string>
+    <string name="create_appointment_button">Treffen erstellen</string>
+    <string name="custom_location_label">Adresse angeben</string>
+    <string name="location_switch_label">Das Treffen findet nicht bei mir statt</string>
+    <string name="new_appointment_title">Neues Treffen erstellen</string>
+    <string name="date_label">Datum</string>
+    <string name="time_label">Uhrzeit</string>
+    <string name="notes_label">Bemerkung</string>
+    <string name="notes_placeholder">Sonstige Informationen</string>
+    <string name="close">Fenster schließen</string>
+    <string name="error_no_user_logged_in">Fehler - kein User eingeloggt</string>
+    <string name="location_label">Location:</string>
+    <string name="placeholder_date">z.B. 20.10.2025</string>
+    <string name="placeholder_time">z.B. 18:30</string>
 </resources>
