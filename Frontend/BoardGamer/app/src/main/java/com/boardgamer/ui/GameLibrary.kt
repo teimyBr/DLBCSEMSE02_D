@@ -12,12 +12,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,68 +41,81 @@ import com.boardgamer.R
 import com.boardgamer.model.Game
 import com.boardgamer.viewmodel.GameLibraryViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameLibrary(navController: NavController) {
     val viewModel = viewModel<GameLibraryViewModel>()
     val listValues by viewModel.gameFlow.collectAsState()
     val openDialog by viewModel.dialogOpen.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(10.dp, 30.dp, 5.dp, 10.dp)
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(R.string.game_lib_title),
-                modifier = Modifier.align(Alignment.CenterVertically),
-                style = MaterialTheme.typography.headlineLarge
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.game_lib_title)) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.close))
+                    }
+                }
             )
-            Spacer(Modifier.weight(1f))
-            Button(onClick = {
-                // Navigate to appointment view, not yet implemented so empty for now
-            }) { Text("X") }
         }
-        Text(
-            text = stringResource(R.string.game_lib_subtitle),
-            modifier = Modifier.padding(10.dp, 5.dp),
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Spacer(Modifier.height(20.dp))
-        Row {
-            Spacer(Modifier.weight(1f))
-            Button(onClick = {
-                viewModel.addGame()
-            }) {
-                Text(
-                    "+",
-                    modifier = Modifier,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.width(10.dp))
-                Text(
-                    stringResource(R.string.add),
-                    modifier = Modifier,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
-        LazyColumn(
+    ){ innerPadding ->
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(159, 168, 218, 70))
+                .padding(innerPadding)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(listValues) { game ->
-                GameItem(game)
+            Row(
+                modifier = Modifier
+                    .padding(10.dp, 30.dp, 5.dp, 10.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.game_lib_title),
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    style = MaterialTheme.typography.headlineLarge
+                )
             }
-        }
-        when {
-            openDialog -> {
-                AddGameDialog(viewModel)
+            Text(
+                text = stringResource(R.string.game_lib_subtitle),
+                modifier = Modifier.padding(10.dp, 5.dp),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Spacer(Modifier.height(20.dp))
+            Row {
+                Spacer(Modifier.weight(1f))
+                Button(onClick = {
+                    viewModel.addGame()
+                }) {
+                    Text(
+                        "+",
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text(
+                        stringResource(R.string.add),
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(159, 168, 218, 70))
+            ) {
+                items(listValues) { game ->
+                    GameItem(game)
+                }
+            }
+            when {
+                openDialog -> {
+                    AddGameDialog(viewModel)
+                }
             }
         }
     }
