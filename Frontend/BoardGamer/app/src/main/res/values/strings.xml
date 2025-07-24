@@ -57,4 +57,11 @@
     <string name="location_label">Location:</string>
     <string name="placeholder_date">z.B. 20.10.2025</string>
     <string name="placeholder_time">z.B. 18:30</string>
+
+    <string name="add_evaluation_success">Bewertung erfolgreich abgegeben</string>
+    <string name="add_evaluation_failure">Fehler beim abgeben der Bewertung</string>
+    <string name="add_evaluation_title">Abend bewerten</string>
+    <string name="add_evaluation_host_title">Wie bewertest du den Gastgeber?</string>
+    <string name="add_evaluation_food_title">Wie bewertest du das Essen?</string>
+    <string name="add_evaluation_overall_title">Wie bewertest du den Abend allgemein?</string>
 </resources>
