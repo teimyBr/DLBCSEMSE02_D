@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.R
+import com.boardgamer.viewmodel.CurrentEventsViewModel
 import com.boardgamer.viewmodel.HomeViewModel
 import com.boardgamer.viewmodel.LoginState
 import com.boardgamer.viewmodel.RegistrationViewModel
@@ -42,7 +43,7 @@ fun Home(navController: NavController) {
 
     LaunchedEffect(loginState) {
         if (loginState is LoginState.Success) {
-            navController.navigate("CurrentEvents") {
+            navController.navigate(CurrentEventsViewModel.SCREEN_NAME) {
                 popUpTo("Home") { inclusive = true }
             }
             viewModel.resetState()
