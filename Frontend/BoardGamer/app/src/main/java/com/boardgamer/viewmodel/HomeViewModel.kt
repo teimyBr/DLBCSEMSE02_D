@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Player
-import com.boardgamer.model.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -69,7 +68,6 @@ class HomeViewModel : ViewModel() {
             try {
                 val player = backend.authenticate(name, password)
                 if (player != null) {
-                    SessionManager.currentPlayer = player
                     _loginState.value = LoginState.Success(player)
                 } else {
                     _loginState.value =

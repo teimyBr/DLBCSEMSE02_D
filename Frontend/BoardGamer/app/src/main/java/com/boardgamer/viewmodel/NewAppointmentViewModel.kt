@@ -1,11 +1,11 @@
 package com.boardgamer.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.boardgamer.R
 import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Appointment
-import com.boardgamer.model.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +21,7 @@ sealed interface SaveState {
     data class Error(val messageResId: Int) : SaveState
 }
 
-class NewAppointmentViewModel : ViewModel() {
+class NewAppointmentViewModel(private val hostId: Long) : ViewModel() {
     companion object {
         const val SCREEN_NAME = "NewAppointment"
     }
@@ -50,7 +50,10 @@ class NewAppointmentViewModel : ViewModel() {
     val saveState = _saveState.asStateFlow()
 
     init {
-        _hostLocation.value = SessionManager.currentPlayer?.location ?: "Ort des Gastgebers"
+        viewModelScope.launch(Dispatchers.IO) {
+            val host = backend.getPlayer(hostId)
+            _hostLocation.value = host?.location ?: "Unbekannter Ort"
+        }
     }
 
     fun onDateChange(newDate: String) { _date.value = newDate }
@@ -67,7 +70,6 @@ class NewAppointmentViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _saveState.value = SaveState.Loading
 
-            val hostId = SessionManager.currentPlayer?.id
             if (hostId == null) {
                 _saveState.value = SaveState.Error(R.string.error_no_user_logged_in)
                 return@launch
@@ -121,5 +123,14 @@ class NewAppointmentViewModel : ViewModel() {
     private fun parseTime(timeStr: String): LocalTime {
         val parts = timeStr.split(":").map { it.toInt() }
         return LocalTime(parts[0], parts[1])
+    }
+}
+
+class NewAppointmentViewModelFactory(private val hostId: Long) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(NewAppointmentViewModel::class.java)) {
+            return NewAppointmentViewModel(hostId) as T
+        }
+        throw IllegalArgumentException("Unbekanntes ViewModel")
     }
 }

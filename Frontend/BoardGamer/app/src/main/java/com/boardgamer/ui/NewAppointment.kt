@@ -12,18 +12,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.R
 import com.boardgamer.viewmodel.NewAppointmentViewModel
+import com.boardgamer.viewmodel.NewAppointmentViewModelFactory
 import com.boardgamer.viewmodel.SaveState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewAppointment(navController: NavController) {
-    val viewModel: NewAppointmentViewModel = viewModel()
+fun NewAppointment(navController: NavController, hostId: Long) {
+    val viewModel: NewAppointmentViewModel = viewModel(
+        factory = NewAppointmentViewModelFactory(hostId)
+    )
 
     val date by viewModel.date.collectAsState()
     val time by viewModel.time.collectAsState()
@@ -139,6 +143,7 @@ fun NewAppointment(navController: NavController) {
             Button(
                 onClick = { viewModel.saveAppointment() },
                 modifier = Modifier.fillMaxWidth(),
+                shape = RectangleShape,
                 enabled = saveState !is SaveState.Loading,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
             ) {

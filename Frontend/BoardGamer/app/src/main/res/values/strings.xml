@@ -12,7 +12,7 @@
     <string name="back_to_home">Zurück zum Startbildschirm</string>
 
     <string name="new_event">Neues Treffen</string>
-    <string name="next_event_hostname">Nächstes Treffen bei Host %1$s</string>
+    <string name="next_event_hostname">Nächstes Treffen bei %1$s</string>
     <string name="event_isPast">Dieses Event liegt in der Vergangenheit</string>
     <string name="event_date">Datum: %1$s</string>
     <string name="event_time">Uhrzeit: %1$s Uhr</string>
@@ -28,7 +28,11 @@
     <string name="email">Email</string>
     <string name="location">Wohnort</string>
     <string name="login">Anmelden</string>
-    <string name="favourite_food">Bevorzugtes Essen</string>
+    <string name="profile_welcome_message">Hallo %1$s!</string>
+    <string name="about_boardgamer">Über Boardgamer</string>
+    <string name="logout">Logout</string>
+    <string name="about_boardgamer_text">Ein IU-Projekt - entwickelt von Timo, Lucas und Erik</string>
+    <string name="playergroup">Eure Spieler-Gruppe:</string>
 
     <string name="add">Hinzufügen</string>
     <string name="game_lib_title">Spielebibliothek</string>

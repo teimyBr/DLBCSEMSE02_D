@@ -3,7 +3,6 @@ package com.boardgamer.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boardgamer.api.BackendAPI
-import com.boardgamer.model.FoodDirection
 import com.boardgamer.model.RegistrationPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,29 +42,8 @@ class RegistrationViewModel : ViewModel() {
     private val _passwordRepeat = MutableStateFlow("")
     val passwordRepeat = _passwordRepeat.asStateFlow()
 
-    private val _selectedFood = MutableStateFlow<FoodDirection?>(null)
-    val selectedFood = _selectedFood.asStateFlow()
-
     private val _passwordsDoNotMatch = MutableStateFlow(false)
     val passwordsDoNotMatch = _passwordsDoNotMatch.asStateFlow()
-
-    private val _foodDirections = MutableStateFlow<List<FoodDirection>>(emptyList())
-    val foodDirections = _foodDirections.asStateFlow()
-
-    init {
-        loadFoodDirections()
-    }
-
-    private fun loadFoodDirections() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _foodDirections.value = backend.getFoodDirections()
-            } catch (e: Exception) {
-                _registrationState.value =
-                    RegistrationState.Error("Essensrichtungen konnten nicht geladen werden!")
-            }
-        }
-    }
 
     fun onUsernameChange(value: String) {
         _username.value = value
@@ -87,16 +65,10 @@ class RegistrationViewModel : ViewModel() {
         _passwordRepeat.value = value
     }
 
-    fun onFoodSelected(food: FoodDirection) {
-        _selectedFood.value = food
-    }
-
     fun submitPlayerRegistration() {
         if (_password.value == _passwordRepeat.value) {
             _passwordsDoNotMatch.value = false
-            _selectedFood.value?.let {
-                registerPlayer()
-            }
+            registerPlayer()
         } else {
             _passwordsDoNotMatch.value = true
         }
@@ -110,7 +82,6 @@ class RegistrationViewModel : ViewModel() {
                     name = _username.value,
                     email = _email.value,
                     password = _password.value,
-                    favouriteFoodId = _selectedFood.value!!.id,
                     location = _location.value
                 )
                 val newId = backend.register(player)

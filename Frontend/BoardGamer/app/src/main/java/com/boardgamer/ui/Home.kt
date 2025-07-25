@@ -35,7 +35,6 @@ import com.boardgamer.viewmodel.RegistrationViewModel
 @Composable
 fun Home(navController: NavController) {
     val viewModel: HomeViewModel = viewModel()
-
     val loginState by viewModel.loginState.collectAsState()
     val username by viewModel.username.collectAsState()
     val password by viewModel.password.collectAsState()
@@ -43,8 +42,10 @@ fun Home(navController: NavController) {
 
     LaunchedEffect(loginState) {
         if (loginState is LoginState.Success) {
-            navController.navigate(CurrentEventsViewModel.SCREEN_NAME) {
-                popUpTo("Home") { inclusive = true }
+            val player = (loginState as LoginState.Success).player
+
+            navController.navigate("${CurrentEventsViewModel.SCREEN_NAME}/${player.id}") {
+                popUpTo(HomeViewModel.SCREEN_NAME) { inclusive = true }
             }
             viewModel.resetState()
         }
