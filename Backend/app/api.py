@@ -84,6 +84,12 @@ async def getPlayer(player_id: int, session: AsyncSession = Depends(get_session)
         raise HTTPException(status_code=404, detail="Player not found")
     return player
 
+@router.get("/players", response_model=list[model.PlayerOut])
+async def getPlayers(session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(model.Player))
+    players = result.scalars().all()
+    return players
+
 @router.get("/isNextHost/{player_id}", response_model=bool)
 async def isNextHost(player_id: int, session: AsyncSession = Depends(get_session)):
     # Zähle, wie viele Termine der Spieler veranstaltet hat
