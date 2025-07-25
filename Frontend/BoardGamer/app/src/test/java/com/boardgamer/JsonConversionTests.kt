@@ -8,6 +8,7 @@ import com.boardgamer.model.GameSuggestion
 import com.boardgamer.model.GameVote
 import com.boardgamer.model.Message
 import com.boardgamer.model.Player
+import com.boardgamer.model.PlayerAppointment
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import org.junit.Test
@@ -87,6 +88,14 @@ class JsonConversionTests {
             "HeyGuysGoingToBeLate"
         )
         val parsed = Message.fromJson(expected.toJson())
+
+        assert(parsed == expected)
+    }
+
+    @Test
+    fun jsonConvertPlayerAppointment() {
+        val expected = PlayerAppointment(12, 34)
+        val parsed = PlayerAppointment.fromJson(expected.toJson())
 
         assert(parsed == expected)
     }

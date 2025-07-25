@@ -30,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.R
 import com.boardgamer.model.Game
+import com.boardgamer.ui.theme.BackgroundColorGames
 import com.boardgamer.viewmodel.GameLibraryViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +98,7 @@ fun GameLibrary(navController: NavController) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(159, 168, 218, 70))
+                    .background(BackgroundColorGames)
             ) {
                 items(listValues) { game ->
                     GameItem(game)
@@ -139,7 +139,7 @@ fun AddGameDialog(viewModel: GameLibraryViewModel) {
     val description by viewModel.newGameDesc.collectAsState()
     val commitEnabled by viewModel.commitEnabled.collectAsState()
     Dialog(
-        onDismissRequest = viewModel::dissmisNewGame
+        onDismissRequest = viewModel::dismissNewGame
     ) {
         Card(
             modifier = Modifier
@@ -172,7 +172,7 @@ fun AddGameDialog(viewModel: GameLibraryViewModel) {
                 )
 
                 Row {
-                    TextButton(onClick = viewModel::dissmisNewGame) { Text(stringResource(R.string.cancel)) }
+                    TextButton(onClick = viewModel::dismissNewGame) { Text(stringResource(R.string.cancel)) }
                     Spacer(Modifier.weight(1f))
                     TextButton(onClick = viewModel::commitNewGame, enabled = commitEnabled) {
                         Text(

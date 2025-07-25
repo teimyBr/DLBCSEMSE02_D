@@ -8,8 +8,6 @@ import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Appointment
 import com.boardgamer.model.SessionManager
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +17,7 @@ import kotlinx.coroutines.launch
 data class AppointmentDetails(
     val appointment: Appointment,
     val hostName: String,
+    val canParticipate: Boolean = true,
     private val openDialogFlow: MutableStateFlow<Boolean> = MutableStateFlow(false),
     val openDialog: StateFlow<Boolean> = openDialogFlow.asStateFlow()
 ) {
@@ -58,18 +57,20 @@ class CurrentEventsViewModel : ViewModel() {
 
     private fun loadAppointmentsWithHostNames() {
         viewModelScope.launch(Dispatchers.IO) {
+            val playerAppointments = backend.getPlayerAppointments()
             _appointmentsState.value = AppointmentsState.Loading
             try {
                 val appointments = backend.getAppointments()
                 val appointmentDetails = appointments.map { appointment ->
-                    async {
-                        val player = backend.getPlayer(appointment.hostId)
-                        AppointmentDetails(
-                            appointment = appointment,
-                            hostName = player?.name ?: "Unbekannt"
-                        )
-                    }
-                }.awaitAll()
+                    val player = backend.getPlayer(appointment.hostId)
+                    val canParticipate = SessionManager.currentPlayer.id != appointment.hostId
+                            && playerAppointments.none { it.playerId == SessionManager.currentPlayer.id && it.appointmentId == appointment.id }
+                    AppointmentDetails(
+                        appointment = appointment,
+                        hostName = player?.name ?: "Unbekannt",
+                        canParticipate = canParticipate
+                    )
+                }
                 _appointmentsState.value = AppointmentsState.Success(appointmentDetails)
             } catch (e: Exception) {
                 _appointmentsState.value =

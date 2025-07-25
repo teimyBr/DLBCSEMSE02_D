@@ -12,7 +12,8 @@
     <string name="back_to_home">Zurück zum Startbildschirm</string>
 
     <string name="new_event">Neues Treffen</string>
-    <string name="next_event_hostname">Nächstes Treffen bei Host %1$s</string>
+    <string name="next_event_hostname">Nächstes Treffen bei %1$s</string>
+    <string name="past_event_hostname">Vergangenes Treffen bei %1$s</string>
     <string name="event_isPast">Dieses Event liegt in der Vergangenheit</string>
     <string name="event_date">Datum: %1$s</string>
     <string name="event_time">Uhrzeit: %1$s Uhr</string>
@@ -64,4 +65,12 @@
     <string name="add_evaluation_host_title">Wie bewertest du den Gastgeber?</string>
     <string name="add_evaluation_food_title">Wie bewertest du das Essen?</string>
     <string name="add_evaluation_overall_title">Wie bewertest du den Abend allgemein?</string>
+
+    <string name="participate_title">Am Treffen teilnehmen</string>
+    <string name="participate_suggest_game_title">Spiele vorschlagen</string>
+    <string name="participate_suggest_game_subtitle">Schlage Spiele für den Abend vor. Hinweis: Spiele die bereits vorgeschlagen wurden tauchen nicht in der Liste auf</string>
+    <string name="participate">Teilnehmen</string>
+    <string name="participate_success">Erfolgreich angemeldet</string>
+    <string name="participate_partial_success">Erfolgreich angemeldet, spiel vorschläge nicht hinzugefügt</string>
+    <string name="participate_failure">Fehler beim anmelden für den Termin</string>
 </resources>
