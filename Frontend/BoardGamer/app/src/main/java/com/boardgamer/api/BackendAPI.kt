@@ -86,6 +86,19 @@ class BackendAPI(
         }
     }
 
+    suspend fun isNextHost(playerId: Long): Boolean {
+        val response = client.get("$basicAddress/isNextHost/$playerId")
+        if (response.status == HttpStatusCode.OK) {
+            return response.bodyAsText().toBoolean()
+        } else {
+            Log.i(
+                TAG,
+                "Failed to check if player is host: $playerId, ${response.status}, ${response.bodyAsText()}"
+            )
+            return false
+        }
+    }
+
     suspend fun getAppointments(): List<Appointment> {
         val response = client.get("$basicAddress/appointments")
         if (response.status == HttpStatusCode.OK) {
