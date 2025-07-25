@@ -6,18 +6,27 @@ import androidx.lifecycle.viewModelScope
 import com.boardgamer.R
 import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Appointment
+import com.boardgamer.model.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 
 data class AppointmentDetails(
     val appointment: Appointment,
-    val hostName: String
-)
+    val hostName: String,
+    private val openDialogFlow: MutableStateFlow<Boolean> = MutableStateFlow(false),
+    val openDialog: StateFlow<Boolean> = openDialogFlow.asStateFlow()
+) {
+    fun updateOpenDialog() {
+        openDialogFlow.value = !openDialogFlow.value
+    }
+}
+
 sealed interface AppointmentsState {
     data object Loading : AppointmentsState
     data class Success(val appointments: List<AppointmentDetails>) : AppointmentsState
@@ -34,8 +43,13 @@ class CurrentEventsViewModel : ViewModel() {
     private val _appointmentsState = MutableStateFlow<AppointmentsState>(AppointmentsState.Loading)
     val appointmentsState = _appointmentsState.asStateFlow()
 
+    var isNextHost = false
+
     init {
         loadAppointmentsWithHostNames()
+        viewModelScope.launch(Dispatchers.IO) {
+            isNextHost = backend.isNextHost(SessionManager.currentPlayer.id)
+        }
     }
 
     fun refreshAppointments() {
@@ -58,7 +72,8 @@ class CurrentEventsViewModel : ViewModel() {
                 }.awaitAll()
                 _appointmentsState.value = AppointmentsState.Success(appointmentDetails)
             } catch (e: Exception) {
-                _appointmentsState.value = AppointmentsState.Error(R.string.error_loading_appointments)
+                _appointmentsState.value =
+                    AppointmentsState.Error(R.string.error_loading_appointments)
             }
         }
     }

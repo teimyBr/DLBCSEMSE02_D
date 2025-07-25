@@ -54,12 +54,15 @@ fun GameLibrary(navController: NavController) {
                 title = { Text(stringResource(id = R.string.game_lib_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.close))
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(id = R.string.close)
+                        )
                     }
                 }
             )
         }
-    ){ innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -67,17 +70,6 @@ fun GameLibrary(navController: NavController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(10.dp, 30.dp, 5.dp, 10.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.game_lib_title),
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    style = MaterialTheme.typography.headlineLarge
-                )
-            }
             Text(
                 text = stringResource(R.string.game_lib_subtitle),
                 modifier = Modifier.padding(10.dp, 5.dp),
