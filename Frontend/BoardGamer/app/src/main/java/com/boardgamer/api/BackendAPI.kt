@@ -86,6 +86,18 @@ class BackendAPI(
         }
     }
 
+    suspend fun getPlayers(): List<Player> {
+        val response = client.get("$basicAddress/players")
+        if (response.status == HttpStatusCode.OK) {
+            return Json.decodeFromString(response.bodyAsText())
+        } else {
+            Log.i(
+                TAG, "Could not retrieve players, ${response.status}, ${response.bodyAsText()}"
+            )
+            return listOf()
+        }
+    }
+
     suspend fun isNextHost(playerId: Long): Boolean {
         val response = client.get("$basicAddress/isNextHost/$playerId")
         if (response.status == HttpStatusCode.OK) {
