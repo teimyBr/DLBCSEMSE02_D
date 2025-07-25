@@ -37,6 +37,12 @@ class ApiTest {
     }
 
     @Test
+    fun getPlayers() {
+        val players = runBlocking { backend.getPlayers() }
+        assert(players.size > 1) { "Expected more then one player, but got ${players.size}" }
+    }
+
+    @Test
     fun isNextHost() {
         val isNext = runBlocking { backend.isNextHost(1) }
         assert(!isNext) { "Expected player 1 to not be a valid nextHost" }
