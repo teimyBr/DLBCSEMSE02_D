@@ -7,7 +7,7 @@ from app import authenticate, register, getAppointments, addAppointment, updateA
 from app import getGameSuggestions, addGameSuggestions, getGames, addGameVote, updateGameVote
 from app import getGameVotesForPlayer, getGameVotes, getFoodDirections, addFoodChoice, getFoodChoices
 from app import getFoodChoice, addEvaluation, getEvaluations, addMessage, getMessages, insertGame
-from app import getPlayerAppointments, addPlayerAppointment, getPlayer, isNextHost
+from app import getPlayerAppointments, addPlayerAppointment, getPlayer, isNextHost, getPlayers
 from app import model
 
 
@@ -159,6 +159,26 @@ async def test_get_player_not_found(mocker):
         await getPlayer(player_id, session=mock_session)
     assert exc_info.value.status_code == 404
     assert exc_info.value.detail == "Player not found"
+
+@pytest.mark.asyncio
+async def test_get_players_returns_all_players(mocker):
+    # Arrange
+    mock_session = MagicMock()
+    mock_result = MagicMock()
+    # Beispiel-Spieler
+    players = [
+        MagicMock(id=1, name="Alice"),
+        MagicMock(id=2, name="Bob"),
+    ]
+    mock_result.scalars = MagicMock(return_value=MagicMock(all=MagicMock(return_value=players)))
+    mock_session.execute = AsyncMock(return_value=mock_result)
+
+    # Act
+    result = await getPlayers(session=mock_session)
+
+    # Assert
+    assert result == players
+    mock_session.execute.assert_called_once()
 
 @pytest.mark.asyncio
 async def test_is_next_host_player_has_least_appointments(mocker):
