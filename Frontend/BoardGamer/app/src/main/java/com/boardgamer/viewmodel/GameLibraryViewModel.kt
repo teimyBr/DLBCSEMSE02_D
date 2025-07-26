@@ -82,7 +82,7 @@ class GameLibraryViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun dissmisNewGame() {
+    fun dismissNewGame() {
         dialogOpenFlow.value = false
     }
 

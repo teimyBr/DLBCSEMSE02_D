@@ -7,6 +7,7 @@ import com.boardgamer.model.Game
 import com.boardgamer.model.GameSuggestion
 import com.boardgamer.model.GameVote
 import com.boardgamer.model.Message
+import com.boardgamer.model.PlayerAppointment
 import com.boardgamer.model.RegistrationPlayer
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate
@@ -73,6 +74,20 @@ class ApiTest {
         )
         val success = runBlocking { backend.updateAppointment(appointment) }
         assert(success) { "Expected update to be successful" }
+    }
+
+    @Test
+    fun getPlayerAppointments() {
+        val list = runBlocking { backend.getPlayerAppointments() }
+
+        assert(list.size > 1) { "Expected the list to be more then one, got: $list" }
+    }
+
+    @Test
+    fun addPlayerAppointment() {
+        val success = runBlocking { backend.addPlayerAppointment(PlayerAppointment(7, 1)) }
+
+        assert(success) { "Expected to successfully add the participation to the event" }
     }
 
     @Test

@@ -58,16 +58,15 @@ class RateAppointmentViewModel(application: Application) : AndroidViewModel(appl
             )
 
             val id = backendApi.addEvaluation(evaluation)
-            if (id > 0) {
-                withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                if (id > 0) {
+
                     Toast.makeText(
                         getApplication<Application>().applicationContext,
                         R.string.add_evaluation_success,
                         Toast.LENGTH_SHORT
                     ).show()
-                }
-            } else {
-                withContext(Dispatchers.Main) {
+                } else {
                     Toast.makeText(
                         getApplication<Application>().applicationContext,
                         R.string.add_evaluation_failure,

@@ -12,11 +12,13 @@ import com.boardgamer.ui.CurrentEvents
 import com.boardgamer.ui.GameLibrary
 import com.boardgamer.ui.Home
 import com.boardgamer.ui.NewAppointment
+import com.boardgamer.ui.Participate
 import com.boardgamer.ui.theme.BoardGamerTheme
 import com.boardgamer.viewmodel.CurrentEventsViewModel
 import com.boardgamer.viewmodel.GameLibraryViewModel
 import com.boardgamer.viewmodel.HomeViewModel
 import com.boardgamer.viewmodel.NewAppointmentViewModel
+import com.boardgamer.viewmodel.ParticipateViewModel
 import com.boardgamer.viewmodel.RegistrationViewModel
 
 class MainActivity : ComponentActivity() {
@@ -37,19 +39,23 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = HomeViewModel.SCREEN_NAME) {
         composable(HomeViewModel.SCREEN_NAME) {
-            Home(navController = navController)
+            Home(navController)
         }
         composable(RegistrationViewModel.SCREEN_NAME) {
             Registration(navController)
         }
         composable(CurrentEventsViewModel.SCREEN_NAME) {
-            CurrentEvents(navController = navController)
+            CurrentEvents(navController)
         }
         composable(GameLibraryViewModel.SCREEN_NAME) {
-            GameLibrary(navController = navController)
+            GameLibrary(navController)
         }
         composable(NewAppointmentViewModel.SCREEN_NAME) {
-            NewAppointment(navController = navController)
+            NewAppointment(navController)
+        }
+        composable(ParticipateViewModel.SCREEN_NAME + "/{id}") {
+            val appointmentId = it.arguments!!.getString("id")!!.toLong()
+            Participate(navController, appointmentId)
         }
     }
 }

@@ -10,6 +10,7 @@ import com.boardgamer.model.GameSuggestion
 import com.boardgamer.model.GameVote
 import com.boardgamer.model.Message
 import com.boardgamer.model.Player
+import com.boardgamer.model.PlayerAppointment
 import com.boardgamer.model.RegistrationPlayer
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -41,7 +42,7 @@ class BackendAPI(
             val response =
                 client.post("$basicAddress/authenticate/${name.replace(" ", "%20")}/$password")
             if (response.status == HttpStatusCode.OK) {
-                return Json.decodeFromString(response.bodyAsText())
+                return Player.fromJson(response.bodyAsText())
             } else {
                 Log.i(
                     TAG,
@@ -58,7 +59,7 @@ class BackendAPI(
     suspend fun register(player: RegistrationPlayer): Long {
         try {
             val response = post("$basicAddress/register/", player.toJson())
-            if (response == HttpStatusCode.OK) {
+            if (response.status == HttpStatusCode.OK) {
                 return getIdFromResponse(response)
             } else {
                 Log.i(
@@ -76,7 +77,7 @@ class BackendAPI(
     suspend fun getPlayer(playerId: Long): Player? {
         val response = client.get("$basicAddress/player/$playerId")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return Player.fromJson(response.bodyAsText())
         } else {
             Log.i(
                 TAG,
@@ -131,6 +132,32 @@ class BackendAPI(
         } else {
             Log.i(TAG, "Failed to add appointment, ${response.status}, ${response.bodyAsText()}")
             return -1
+        }
+    }
+
+    suspend fun getPlayerAppointments(): List<PlayerAppointment> {
+        val response = client.get("$basicAddress/playerAppointments")
+        if (response.status == HttpStatusCode.OK) {
+            return Json.decodeFromString(response.bodyAsText())
+        } else {
+            Log.i(
+                TAG,
+                "Failed to retrieve player appointment assignments, ${response.status}, ${response.bodyAsText()}"
+            )
+            return listOf()
+        }
+    }
+
+    suspend fun addPlayerAppointment(playerAppointment: PlayerAppointment): Boolean {
+        val response = post("$basicAddress/playerAppointment/insert/", playerAppointment.toJson())
+        if (response.status == HttpStatusCode.OK) {
+            return PlayerAppointment.fromJson(response.bodyAsText()) == playerAppointment
+        } else {
+            Log.i(
+                TAG,
+                "Failed to add player appointment link, ${response.status}, ${response.bodyAsText()}"
+            )
+            return false
         }
     }
 
@@ -271,7 +298,7 @@ class BackendAPI(
     suspend fun getFoodChoice(appointmentId: Long, playerId: Long): FoodChoice? {
         val response = client.get("$basicAddress/foodChoices/$appointmentId/$playerId")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return FoodChoice.fromJson(response.bodyAsText())
         } else {
             Log.i(TAG, "Failed to get Food Choices, ${response.status}, ${response.bodyAsText()}")
             return null
