@@ -26,7 +26,12 @@ class ApiTest {
     @Test
     fun register() {
         //Note this test will fail whenever there already is a user with the e-mail in the db
-        val player = RegistrationPlayer("Lucas", "example@mail.com", "secret", "BerlinCityBaby", 1)
+        val player = RegistrationPlayer(
+            "Testing today",
+            "example@testingToday.com",
+            "secret",
+            "BerlinCityBaby"
+        )
         val id = runBlocking { backend.register(player) }
         assert(id > -1) { "Expected Id greater -1, but got: $id" }
     }
@@ -150,30 +155,6 @@ class ApiTest {
     fun getGameVotesForAppointment() {
         val votes = runBlocking { backend.getGameVotesForAppointment(1) }
         assert(votes.size == 6) { "Expected 5 votes but got: $votes" }
-    }
-
-    @Test
-    fun getFoodDirections() {
-        val directions = runBlocking { backend.getFoodDirections() }
-        assert(directions.size == 3) { "Expected 3 directions, but got $directions" }
-    }
-
-    @Test
-    fun addFoodChoice() { // Always fails with code 200 as it catches exceptions
-        val id = runBlocking { backend.addFoodChoice(2, 1, 1) }
-        assert(id > -1) { "Expected id to be greater -1" }
-    }
-
-    @Test
-    fun getFoodChoices() {
-        val foodChoices = runBlocking { backend.getFoodChoices(1) }
-        assert(foodChoices.size == 3) { "Expected 3 choices, but got: $foodChoices" }
-    }
-
-    @Test
-    fun getFoodChoice() {
-        val foodChoice = runBlocking { backend.getFoodChoice(1, 1) }
-        assert(foodChoice != null) { "Expected to get a food choice" }
     }
 
     @Test

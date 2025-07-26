@@ -1,5 +1,6 @@
 package com.boardgamer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boardgamer.api.BackendAPI
@@ -25,6 +26,7 @@ class HomeViewModel : ViewModel() {
 
     companion object {
         const val SCREEN_NAME = "Home"
+        const val TAG = "LoginVM"
     }
 
     private val backend = BackendAPI()
@@ -76,6 +78,7 @@ class HomeViewModel : ViewModel() {
                         LoginState.Error("Anmeldung fehlgeschlagen - Name oder Passwort falsch.")
                 }
             } catch (e: Exception) {
+                Log.i(TAG, "Something went wrong when trying to log in", e)
                 _loginState.value =
                     LoginState.Error("Anmeldung fehlgeschlagen - Name oder Passwort falsch.")
             }

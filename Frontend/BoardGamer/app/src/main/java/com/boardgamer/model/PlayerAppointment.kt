@@ -2,7 +2,6 @@ package com.boardgamer.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class PlayerAppointment(
@@ -17,7 +16,7 @@ data class PlayerAppointment(
 
     companion object {
         fun fromJson(input: String): PlayerAppointment {
-            return Json.decodeFromString(input)
+            return JsonSetup.json.decodeFromString(input)
         }
     }
 }
