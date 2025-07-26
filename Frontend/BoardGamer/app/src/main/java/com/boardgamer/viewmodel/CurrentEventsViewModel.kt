@@ -1,5 +1,6 @@
 package com.boardgamer.viewmodel
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,12 +30,13 @@ data class AppointmentDetails(
 sealed interface AppointmentsState {
     data object Loading : AppointmentsState
     data class Success(val appointments: List<AppointmentDetails>) : AppointmentsState
-    data class Error(@StringRes val messageResId: Int) : AppointmentsState
+    data class Error(@field:StringRes val messageResId: Int) : AppointmentsState
 }
 
 class CurrentEventsViewModel : ViewModel() {
     companion object {
         const val SCREEN_NAME = "CurrentEvents"
+        const val TAG = "CurrEventsVM"
     }
 
     private val backend = BackendAPI()
@@ -73,6 +75,7 @@ class CurrentEventsViewModel : ViewModel() {
                 }
                 _appointmentsState.value = AppointmentsState.Success(appointmentDetails)
             } catch (e: Exception) {
+                Log.i(TAG, "Something went wrong when loading appointments from backend", e)
                 _appointmentsState.value =
                     AppointmentsState.Error(R.string.error_loading_appointments)
             }

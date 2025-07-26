@@ -2,7 +2,6 @@ package com.boardgamer.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class Evaluation(
@@ -24,7 +23,7 @@ data class Evaluation(
 
     companion object {
         fun fromJson(input: String): Evaluation {
-            return Json.decodeFromString(input)
+            return JsonSetup.json.decodeFromString(input)
         }
     }
 }

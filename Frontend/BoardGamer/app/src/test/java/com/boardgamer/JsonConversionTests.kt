@@ -2,7 +2,6 @@ package com.boardgamer
 
 import com.boardgamer.model.Appointment
 import com.boardgamer.model.Evaluation
-import com.boardgamer.model.FoodDirection
 import com.boardgamer.model.Game
 import com.boardgamer.model.GameSuggestion
 import com.boardgamer.model.GameVote
@@ -18,7 +17,7 @@ import kotlin.time.ExperimentalTime
 class JsonConversionTests {
     @Test
     fun jsonConvertPlayer() {
-        val expected = Player(5, "Check", "These", "values", 10)
+        val expected = Player(5, "Check", "These", "values")
         val parsed = Player.fromJson(expected.toJson())
 
         assert(parsed == expected)
@@ -34,14 +33,6 @@ class JsonConversionTests {
             15
         )
         val parsed = Appointment.fromJson(expected.toJson())
-
-        assert(parsed == expected)
-    }
-
-    @Test
-    fun jsonConvertFoodDirection() {
-        val expected = FoodDirection(10, "SuperDuper")
-        val parsed = FoodDirection.fromJson(expected.toJson())
 
         assert(parsed == expected)
     }

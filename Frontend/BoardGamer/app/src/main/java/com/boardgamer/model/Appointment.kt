@@ -4,7 +4,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlin.time.ExperimentalTime
 
 @Serializable
@@ -23,7 +22,7 @@ data class Appointment(
 
     companion object {
         fun fromJson(input: String): Appointment {
-            return Json.decodeFromString(input)
+            return JsonSetup.json.decodeFromString(input)
         }
     }
 }

@@ -19,7 +19,7 @@ data class GameVote(
 
     companion object {
         fun fromJson(input: String): GameVote {
-            return Json.decodeFromString(input)
+            return JsonSetup.json.decodeFromString(input)
         }
     }
 }

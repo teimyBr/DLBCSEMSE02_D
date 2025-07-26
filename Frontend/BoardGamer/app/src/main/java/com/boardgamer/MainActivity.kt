@@ -13,6 +13,7 @@ import com.boardgamer.ui.GameLibrary
 import com.boardgamer.ui.Home
 import com.boardgamer.ui.NewAppointment
 import com.boardgamer.ui.Participate
+import com.boardgamer.ui.Registration
 import com.boardgamer.ui.theme.BoardGamerTheme
 import com.boardgamer.viewmodel.CurrentEventsViewModel
 import com.boardgamer.viewmodel.GameLibraryViewModel

@@ -1,4 +1,4 @@
-package com.boardgamer
+package com.boardgamer.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,9 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -41,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.boardgamer.R
 import com.boardgamer.viewmodel.RegistrationState
 import com.boardgamer.viewmodel.RegistrationViewModel
 
@@ -58,10 +53,6 @@ fun Registration(navController: NavController) {
     val passwordRepeat by viewModel.passwordRepeat.collectAsState()
     val location by viewModel.location.collectAsState()
     val passwordsDoNotMatch by viewModel.passwordsDoNotMatch.collectAsState()
-    val selectedFood by viewModel.selectedFood.collectAsState()
-
-    val foodDirections by viewModel.foodDirections.collectAsState()
-    var isFoodDropdownExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = registrationState) {
         if (registrationState is RegistrationState.Success) {
@@ -138,41 +129,6 @@ fun Registration(navController: NavController) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            ExposedDropdownMenuBox(
-                expanded = isFoodDropdownExpanded,
-                onExpandedChange = { isFoodDropdownExpanded = !isFoodDropdownExpanded }
-            ) {
-                OutlinedTextField(
-                    value = selectedFood?.designation ?: "",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = {
-                        Text(
-                            stringResource(id = R.string.favourite_food)
-                        )
-                    },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isFoodDropdownExpanded) },
-                    modifier = Modifier.menuAnchor(),
-                    enabled = registrationState !is RegistrationState.Loading
-                )
-                ExposedDropdownMenu(
-                    expanded = isFoodDropdownExpanded,
-                    onDismissRequest = { isFoodDropdownExpanded = false }
-                ) {
-                    foodDirections.forEach { food ->
-                        DropdownMenuItem(
-                            text = { Text(food.designation) },
-                            onClick = {
-                                viewModel.onFoodSelected(food)
-                                isFoodDropdownExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
             OutlinedTextField(
                 value = password,
                 onValueChange = { viewModel.onPasswordChange(it) },
@@ -220,7 +176,7 @@ fun Registration(navController: NavController) {
             Button(
                 onClick = { viewModel.submitPlayerRegistration() },
                 shape = RectangleShape,
-                enabled = registrationState !is RegistrationState.Loading && username.isNotBlank() && location.isNotBlank() && selectedFood != null
+                enabled = registrationState !is RegistrationState.Loading && username.isNotBlank() && location.isNotBlank()
             ) {
                 if (registrationState is RegistrationState.Loading) {
                     CircularProgressIndicator(

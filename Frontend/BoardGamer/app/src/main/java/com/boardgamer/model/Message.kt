@@ -3,7 +3,6 @@ package com.boardgamer.model
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -24,7 +23,7 @@ data class Message(
 
     companion object {
         fun fromJson(input: String): Message {
-            return Json.decodeFromString(input)
+            return JsonSetup.json.decodeFromString(input)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.boardgamer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boardgamer.R
@@ -24,6 +25,7 @@ sealed interface SaveState {
 class NewAppointmentViewModel : ViewModel() {
     companion object {
         const val SCREEN_NAME = "NewAppointment"
+        const val TAG = "NewAppointmentVM"
     }
 
     private val backend = BackendAPI()
@@ -43,40 +45,42 @@ class NewAppointmentViewModel : ViewModel() {
     private val _customLocation = MutableStateFlow("")
     val customLocation = _customLocation.asStateFlow()
 
-    private val _hostLocation = MutableStateFlow("")
-    val hostLocation = _hostLocation.asStateFlow()
-
     private val _saveState = MutableStateFlow<SaveState>(SaveState.Idle)
     val saveState = _saveState.asStateFlow()
 
-    init {
-        _hostLocation.value = SessionManager.currentPlayer?.location ?: "Ort des Gastgebers"
+    fun onDateChange(newDate: String) {
+        _date.value = newDate
     }
 
-    fun onDateChange(newDate: String) { _date.value = newDate }
-    fun onTimeChange(newTime: String) { _time.value = newTime }
-    fun onNotesChange(newNotes: String) { _notes.value = newNotes }
+    fun onTimeChange(newTime: String) {
+        _time.value = newTime
+    }
+
+    fun onNotesChange(newNotes: String) {
+        _notes.value = newNotes
+    }
+
     fun onLocationSwitchChange(isChecked: Boolean) {
         _isLocationDifferent.value = isChecked
         if (!isChecked) {
             _customLocation.value = ""
         }
-    }    fun onCustomLocationChange(newLocation: String) { _customLocation.value = newLocation }
+    }
+
+    fun onCustomLocationChange(newLocation: String) {
+        _customLocation.value = newLocation
+    }
 
     fun saveAppointment() {
         viewModelScope.launch(Dispatchers.IO) {
             _saveState.value = SaveState.Loading
 
-            val hostId = SessionManager.currentPlayer?.id
-            if (hostId == null) {
-                _saveState.value = SaveState.Error(R.string.error_no_user_logged_in)
-                return@launch
-            }
+            val hostId = SessionManager.currentPlayer.id
 
             val finalLocation = if (_isLocationDifferent.value) {
                 _customLocation.value
             } else {
-                _hostLocation.value
+                SessionManager.currentPlayer.location
             }
 
             if (finalLocation.isBlank()) {
@@ -104,6 +108,7 @@ class NewAppointmentViewModel : ViewModel() {
                 }
 
             } catch (e: Exception) {
+                Log.e(TAG, "Couldn't parse the entered time & date values", e)
                 _saveState.value = SaveState.Error(R.string.error_invalid_date_time)
             }
         }

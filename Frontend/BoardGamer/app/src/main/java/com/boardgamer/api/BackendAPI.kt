@@ -3,11 +3,10 @@ package com.boardgamer.api
 import android.util.Log
 import com.boardgamer.model.Appointment
 import com.boardgamer.model.Evaluation
-import com.boardgamer.model.FoodChoice
-import com.boardgamer.model.FoodDirection
 import com.boardgamer.model.Game
 import com.boardgamer.model.GameSuggestion
 import com.boardgamer.model.GameVote
+import com.boardgamer.model.JsonSetup
 import com.boardgamer.model.Message
 import com.boardgamer.model.Player
 import com.boardgamer.model.PlayerAppointment
@@ -23,7 +22,6 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.jsonPrimitive
@@ -34,7 +32,10 @@ import java.net.ConnectException
 class BackendAPI(
     val basicAddress: String = "http://10.0.2.2:8000"
 ) {
-    val TAG = "BackendAPI"
+    companion object {
+        const val TAG = "BackendAPI"
+    }
+
     val client = HttpClient(CIO)
 
     suspend fun authenticate(name: String, password: String): Player? {
@@ -90,7 +91,7 @@ class BackendAPI(
     suspend fun getPlayers(): List<Player> {
         val response = client.get("$basicAddress/players")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return JsonSetup.json.decodeFromString(response.bodyAsText())
         } else {
             Log.i(
                 TAG, "Could not retrieve players, ${response.status}, ${response.bodyAsText()}"
@@ -115,7 +116,7 @@ class BackendAPI(
     suspend fun getAppointments(): List<Appointment> {
         val response = client.get("$basicAddress/appointments")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return JsonSetup.json.decodeFromString(response.bodyAsText())
         } else {
             Log.i(
                 TAG,
@@ -138,7 +139,7 @@ class BackendAPI(
     suspend fun getPlayerAppointments(): List<PlayerAppointment> {
         val response = client.get("$basicAddress/playerAppointments")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return JsonSetup.json.decodeFromString(response.bodyAsText())
         } else {
             Log.i(
                 TAG,
@@ -174,7 +175,7 @@ class BackendAPI(
     suspend fun getGameSuggestions(appointmentId: Long): List<GameSuggestion> {
         val response = client.get("$basicAddress/gameSuggestions/$appointmentId")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return JsonSetup.json.decodeFromString(response.bodyAsText())
         } else {
             Log.i(
                 TAG,
@@ -186,7 +187,10 @@ class BackendAPI(
 
     suspend fun addGameSuggestions(gameSuggestions: List<GameSuggestion>): Boolean {
         val response =
-            post("$basicAddress/gameSuggestions/insert/", Json.encodeToString(gameSuggestions))
+            post(
+                "$basicAddress/gameSuggestions/insert/",
+                JsonSetup.json.encodeToString(gameSuggestions)
+            )
         if (response.status == HttpStatusCode.OK) {
             return getBooleanFromResponse(response)
         } else {
@@ -201,7 +205,7 @@ class BackendAPI(
     suspend fun getGames(): List<Game> {
         val response = client.get("$basicAddress/games")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return JsonSetup.json.decodeFromString(response.bodyAsText())
         } else {
             Log.i(TAG, "Failed to get Games, ${response.status}, ${response.bodyAsText()}")
             return listOf()
@@ -241,7 +245,7 @@ class BackendAPI(
     suspend fun getGameVotesForPlayer(appointmentId: Long, playerId: Long): List<GameVote> {
         val response = client.get("$basicAddress/gameVotes/$appointmentId/$playerId")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return JsonSetup.json.decodeFromString(response.bodyAsText())
         } else {
             Log.i(
                 TAG,
@@ -254,54 +258,13 @@ class BackendAPI(
     suspend fun getGameVotesForAppointment(appointmentId: Long): List<GameVote> {
         val response = client.get("$basicAddress/gameVotes/$appointmentId")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return JsonSetup.json.decodeFromString(response.bodyAsText())
         } else {
             Log.i(
                 TAG,
                 "Couldn't get GameVotes for Appointment, ${response.status}, ${response.bodyAsText()}"
             )
             return listOf()
-        }
-    }
-
-    suspend fun getFoodDirections(): List<FoodDirection> {
-        val response = client.get("$basicAddress/foodDirections")
-        if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
-        } else {
-            Log.i(TAG, "Couldn't get food directions, ${response.status}, ${response.bodyAsText()}")
-            return listOf()
-        }
-    }
-
-    suspend fun addFoodChoice(appointmentId: Long, playerId: Long, foodDirectionId: Long): Long {
-        val response =
-            client.post("$basicAddress/foodChoices/insert/$appointmentId/$playerId/$foodDirectionId")
-        if (response.status == HttpStatusCode.OK) {
-            return getIdFromResponse(response)
-        } else {
-            Log.i(TAG, "addFoodChoice failed, ${response.status}, ${response.bodyAsText()}")
-            return -1
-        }
-    }
-
-    suspend fun getFoodChoices(appointmentId: Long): List<FoodChoice> {
-        val response = client.get("$basicAddress/foodChoices/$appointmentId")
-        if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
-        } else {
-            Log.i(TAG, "Failed to getFoodChoices, ${response.status}, ${response.bodyAsText()}")
-            return listOf()
-        }
-    }
-
-    suspend fun getFoodChoice(appointmentId: Long, playerId: Long): FoodChoice? {
-        val response = client.get("$basicAddress/foodChoices/$appointmentId/$playerId")
-        if (response.status == HttpStatusCode.OK) {
-            return FoodChoice.fromJson(response.bodyAsText())
-        } else {
-            Log.i(TAG, "Failed to get Food Choices, ${response.status}, ${response.bodyAsText()}")
-            return null
         }
     }
 
@@ -318,7 +281,7 @@ class BackendAPI(
     suspend fun getEvaluations(appointmentId: Long): List<Evaluation> {
         val response = client.get("$basicAddress/evaluations/$appointmentId")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return JsonSetup.json.decodeFromString(response.bodyAsText())
         } else {
             Log.i(TAG, "Failed to get Evaluations, ${response.status}, ${response.bodyAsText()}")
             return listOf()
@@ -338,7 +301,7 @@ class BackendAPI(
     suspend fun getMessages(appointmentId: Long): List<Message> {
         val response = client.get("$basicAddress/messages/$appointmentId")
         if (response.status == HttpStatusCode.OK) {
-            return Json.decodeFromString(response.bodyAsText())
+            return JsonSetup.json.decodeFromString(response.bodyAsText())
         } else {
             Log.i(TAG, "Failed to get Messages, ${response.status}, ${response.bodyAsText()}")
             return listOf()
@@ -346,12 +309,12 @@ class BackendAPI(
     }
 
     private suspend fun getIdFromResponse(response: HttpResponse): Long {
-        val jsonObject = Json.decodeFromString<JsonObject>(response.bodyAsText())
+        val jsonObject = JsonSetup.json.decodeFromString<JsonObject>(response.bodyAsText())
         return jsonObject["id"]?.jsonPrimitive?.long ?: -1
     }
 
     private suspend fun getBooleanFromResponse(response: HttpResponse): Boolean {
-        val jsonObject = Json.decodeFromString<JsonObject>(response.bodyAsText())
+        val jsonObject = JsonSetup.json.decodeFromString<JsonObject>(response.bodyAsText())
         return jsonObject["success"]?.jsonPrimitive?.boolean ?: false
     }
 
