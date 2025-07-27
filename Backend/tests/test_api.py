@@ -5,9 +5,8 @@ import datetime
 
 from app import authenticate, register, getAppointments, addAppointment, updateAppointment
 from app import getGameSuggestions, addGameSuggestions, getGames, addGameVote, updateGameVote
-from app import getGameVotesForPlayer, getGameVotes, getFoodDirections, addFoodChoice, getFoodChoices
-from app import getFoodChoice, addEvaluation, getEvaluations, addMessage, getMessages, insertGame
-from app import getPlayerAppointments, addPlayerAppointment, getPlayer, isNextHost, getPlayers
+from app import addEvaluation, getEvaluations, getGameVotesForPlayer, getGameVotes, addMessage, getMessages
+from app import insertGame, getPlayerAppointments, addPlayerAppointment, getPlayer, isNextHost, getPlayers
 from app import model
 
 
@@ -54,8 +53,7 @@ async def test_register_email_exists(mocker):
         name="Test",
         email="test@example.com",
         password="secret",
-        location="Earth",
-        favourite_food_id=1
+        location="Earth"
     )
     mock_session = MagicMock()
     # simulate: email already exists
@@ -76,8 +74,7 @@ async def test_register_success(mocker):
         name="Test",
         email="test@example.com",
         password="secret",
-        location="Earth",
-        favourite_food_id=1
+        location="Earth"
     )
     mock_session = MagicMock()
 
@@ -98,8 +95,7 @@ async def test_register_success(mocker):
         name=player_data.name,
         email=player_data.email,
         password=player_data.password,
-        location=player_data.location,
-        favourite_food_id=player_data.favourite_food_id
+        location=player_data.location
     )
 
     # session.refresh sets the id (simulate)
@@ -127,8 +123,7 @@ async def test_get_player_found(mocker):
         name="Test",
         email="test@example.com",
         password="secret",
-        location="Earth",
-        favourite_food_id=1
+        location="Earth"
     )
     mock_session = MagicMock()
     mock_result = MagicMock()
@@ -143,7 +138,6 @@ async def test_get_player_found(mocker):
     assert result.name == player_obj.name
     assert result.email == player_obj.email
     assert result.location == player_obj.location
-    assert result.favourite_food_id == player_obj.favourite_food_id
 
 @pytest.mark.asyncio
 async def test_get_player_not_found(mocker):
@@ -585,111 +579,8 @@ async def test_get_game_votes_no_suggestions(mocker):
     assert result == []
 
 @pytest.mark.asyncio
-async def test_get_food_directions(mocker):
-    mock_session = MagicMock()
-    mock_result = MagicMock()
-    directions = [
-        model.FoodDirection(id=1, name="Vegan"),
-        model.FoodDirection(id=2, name="Vegetarian"),
-    ]
-    mock_result.scalars.return_value.all.return_value = directions
-    mock_session.execute = AsyncMock(return_value=mock_result)
-
-    result = await getFoodDirections(session=mock_session)
-
-    assert result == directions
-    mock_session.execute.assert_awaited_once()
-
-@pytest.mark.asyncio
-async def test_add_food_choice_success(mocker):
-    mock_session = MagicMock()
-    # simulate: max id is 5
-    mock_result_max_id = MagicMock()
-    mock_result_max_id.scalar.return_value = 5
-    mock_session.execute = AsyncMock(return_value=mock_result_max_id)
-    mock_session.add = MagicMock()
-    mock_session.commit = AsyncMock()
-    mock_session.refresh = AsyncMock()
-
-    # simulate: new choice
-    new_choice = model.FoodChoice(
-        id=6,
-        appointment_id=1,
-        player_id=2,
-        food_direction_id=3
-    )
-    # refresh sets the id
-    async def refresh_side_effect(obj):
-        obj.id = 6
-    mock_session.refresh = AsyncMock(side_effect=refresh_side_effect)
-
-    result = await addFoodChoice(1, 2, 3, session=mock_session)
-
-    assert result == {"id": 6}
-    mock_session.add.assert_called_once()
-    mock_session.commit.assert_awaited_once()
-    mock_session.refresh.assert_awaited_once()
-
-@pytest.mark.asyncio
-async def test_add_food_choice_failure(mocker):
-    mock_session = MagicMock()
-    mock_result_max_id = MagicMock()
-    mock_result_max_id.scalar.return_value = 5
-    mock_session.execute = AsyncMock(return_value=mock_result_max_id)
-    mock_session.add = MagicMock()
-    mock_session.commit = AsyncMock(side_effect=Exception("fail"))
-    mock_session.refresh = AsyncMock()
-    mock_session.rollback = AsyncMock()
-
-    result = await addFoodChoice(1, 2, 3, session=mock_session)
-
-    assert result == {"id": -1}
-    mock_session.rollback.assert_awaited_once()
-
-@pytest.mark.asyncio
-async def test_get_food_choices(mocker):
-    mock_session = MagicMock()
-    mock_result = MagicMock()
-    choices = [
-        model.FoodChoice(id=1, appointment_id=1, player_id=2, food_direction_id=3),
-        model.FoodChoice(id=2, appointment_id=1, player_id=3, food_direction_id=4),
-    ]
-    mock_result.scalars.return_value.all.return_value = choices
-    mock_session.execute = AsyncMock(return_value=mock_result)
-
-    result = await getFoodChoices(appointmentId=1, session=mock_session)
-
-    assert result == choices
-    mock_session.execute.assert_awaited_once()
-
-@pytest.mark.asyncio
-async def test_get_food_choice_found(mocker):
-    mock_session = MagicMock()
-    mock_result = MagicMock()
-    choice = model.FoodChoice(id=1, appointment_id=1, player_id=2, food_direction_id=3)
-    mock_result.scalar_one_or_none = AsyncMock(return_value=choice)
-    mock_session.execute = AsyncMock(return_value=mock_result)
-
-    result = await getFoodChoice(appointmentId=1, playerId=2, session=mock_session)
-
-    assert result == choice
-    mock_session.execute.assert_awaited_once()
-
-@pytest.mark.asyncio
-async def test_get_food_choice_not_found(mocker):
-    mock_session = MagicMock()
-    mock_result = MagicMock()
-    mock_result.scalar_one_or_none = AsyncMock(return_value=None)
-    mock_session.execute = AsyncMock(return_value=mock_result)
-
-    result = await getFoodChoice(appointmentId=1, playerId=2, session=mock_session)
-
-    assert result is None
-    mock_session.execute.assert_awaited_once()
-
-@pytest.mark.asyncio
 async def test_add_evaluation(mocker):
-    eval_data = model.EvaluationCreate(appointment_id=1, player_id=2, rating=5, comment="Great!")
+    eval_data = model.EvaluationCreate(appointment_id=1, player_id=2, rating=5, host_rating=5, overall_evaluation=5)
     mock_session = MagicMock()
     # simulate: max id is 7
     mock_result_max_id = MagicMock()
@@ -715,8 +606,8 @@ async def test_get_evaluations(mocker):
     mock_session = MagicMock()
     mock_result = MagicMock()
     evaluations = [
-        model.Evaluation(id=1, appointment_id=1, player_id=2, rating=5, comment="Great!"),
-        model.Evaluation(id=2, appointment_id=1, player_id=3, rating=4, comment="Good"),
+        model.Evaluation(id=1, appointment_id=1, player_id=2, rating=5, host_rating=5, overall_evaluation=5),
+        model.Evaluation(id=2, appointment_id=1, player_id=3, rating=4, host_rating=5, overall_evaluation=5),
     ]
     mock_result.scalars.return_value.all.return_value = evaluations
     mock_session.execute = AsyncMock(return_value=mock_result)
