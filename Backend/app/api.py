@@ -65,8 +65,7 @@ async def register(player: model.PlayerCreate, session: AsyncSession = Depends(g
         name=player.name,
         email=player.email,
         password=player.password,
-        location=player.location,
-        favourite_food_id=player.favourite_food_id
+        location=player.location
     )
     session.add(new_player)
     await session.commit()
@@ -302,54 +301,6 @@ async def getGameVotes(appointmentId: int, session: AsyncSession = Depends(get_s
     )
     logging.info("Returned game suggestion ids for appointment: {appointmentId}")
     return result.scalars().all()
-
-@router.get("/foodDirections", response_model=List[model.FoodDirectionOut])
-async def getFoodDirections(session: AsyncSession = Depends(get_session)):
-    logging.info("Return all food directions")
-    result = await session.execute(select(model.FoodDirection))
-    return result.scalars().all()
-
-@router.post("/foodChoices/insert/{appointmentId}/{playerId}/{foodDirectionId}", response_model=dict)
-async def addFoodChoice(appointmentId: int, playerId: int, foodDirectionId: int, session: AsyncSession = Depends(get_session)):
-    logging.info("Insert food choices")
-    # Nächste freie ID bestimmen
-    result = await session.execute(select(func.max(model.FoodChoice.id)))
-    max_id = result.scalar()
-    next_id = (max_id or 0) + 1
-
-    new_choice = model.FoodChoice(
-        id=next_id,
-        appointment_id=appointmentId,
-        player_id=playerId,
-        food_direction_id=foodDirectionId
-    )
-    session.add(new_choice)
-    try:
-        await session.commit()
-        await session.refresh(new_choice)
-        logging.info(f"Insert food choices successfully: {new_choice.id}")
-        return {"id": new_choice.id}
-    except Exception:
-        await session.rollback()
-        logging.warning("Insert food choices failed")
-        return {"id": -1}
-
-@router.get("/foodChoices/{appointmentId}", response_model=List[model.FoodChoiceOut])
-async def getFoodChoices(appointmentId: int, session: AsyncSession = Depends(get_session)):
-    logging.info("Get food choices for appointment: {appointmentId}")
-    result = await session.execute(select(model.FoodChoice).where(model.FoodChoice.appointment_id == appointmentId))
-    return result.scalars().all()
-
-@router.get("/foodChoices/{appointmentId}/{playerId}", response_model=Optional[model.FoodChoiceOut])
-async def getFoodChoice(appointmentId: int, playerId: int, session: AsyncSession = Depends(get_session)):
-    logging.info("Get food choices for appointment: {appointmentId} and player: {playerId}")
-    result = await session.execute(
-        select(model.FoodChoice).where(
-            model.FoodChoice.appointment_id == appointmentId,
-            model.FoodChoice.player_id == playerId
-        )
-    )
-    return result.scalar_one_or_none()
 
 @router.post("/evaluations/insert/", response_model=dict)
 async def addEvaluation(evaluation: model.EvaluationCreate, session: AsyncSession = Depends(get_session)):

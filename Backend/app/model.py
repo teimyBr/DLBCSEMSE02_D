@@ -15,7 +15,6 @@ class Player(Base):
     email = Column(String(40), unique=True)
     password = Column(String(30))
     location = Column(String(50))
-    favourite_food_id = Column(Integer, ForeignKey("food_direction.id"))
 
 class Appointment(Base):
     __tablename__ = "appointment"
@@ -48,18 +47,6 @@ class GameVote(Base):
     game_suggestion_id = Column(Integer, ForeignKey("game_suggestion.id"), primary_key=True)
     vote_value = Column(Boolean)
 
-class FoodDirection(Base):
-    __tablename__ = "food_direction"
-    id = Column(Integer, primary_key=True)
-    designation = Column(String(30))
-
-class FoodChoice(Base):
-    __tablename__ = "food_choice"
-    id = Column(Integer, primary_key=True)
-    player_id = Column(Integer, ForeignKey("player.id"))
-    appointment_id = Column(Integer, ForeignKey("appointment.id"))
-    food_direction_id = Column(Integer, ForeignKey("food_direction.id"))
-
 class Evaluation(Base):
     __tablename__ = "evaluation"
     id = Column(Integer, primary_key=True)
@@ -84,14 +71,12 @@ class PlayerCreate(BaseModel):
     email: str
     password: str
     location: Optional[str] = None
-    favourite_food_id: Optional[int] = None
 
 class PlayerOut(BaseModel):
     id: int
     name: str
     email: str
     location: Optional[str]
-    favourite_food_id: Optional[int]
     class Config:
         orm_mode = True
 
@@ -151,20 +136,6 @@ class GameVoteOut(BaseModel):
     player_id: int
     game_suggestion_id: int
     vote_value: bool
-    class Config:
-        orm_mode = True
-
-class FoodDirectionOut(BaseModel):
-    id: int
-    designation: str
-    class Config:
-        orm_mode = True
-
-class FoodChoiceOut(BaseModel):
-    id: int
-    player_id: int
-    appointment_id: int
-    food_direction_id: int
     class Config:
         orm_mode = True
 
