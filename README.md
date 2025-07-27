@@ -49,6 +49,15 @@ http://localhost:8000/docs
  * POST /register/
    Registriert einen neuen Spieler.
 
+ * GET /player/{player_id}
+   Gibt die Daten eines Spielers zurück.
+
+ * GET /players
+   Listet alle Spieler auf.
+
+ * GET /isNextHost/{player_id}
+   Prüft, ob der Spieler als nächster Gastgeber an der Reihe ist.
+
 ### APPOINTMENTS (SPIELEABENDE)
 
  * GET /appointments
@@ -60,10 +69,21 @@ http://localhost:8000/docs
  * POST /appointments/update/
    Aktualisiert einen bestehenden Termin.
 
+### PLAYER-APPOINTMENT
+
+ * GET /playerAppointments
+   Listet alle player_appointments auf.
+
+ * POST /playerAppointment/insert/
+   Fügt einen neuen player_appointment hinzu.
+
 ### SPIELE & VORSCHLÄGE
 
  * GET /games
    Listet alle Spiele auf.
+
+ * POST /game/insert/
+   Fügt ein neues Spiel hinzu.
 
  * GET /gameSuggestions/{appointmentId}
    Gibt alle Spielvorschläge für einen Termin zurück.
@@ -84,20 +104,6 @@ http://localhost:8000/docs
 
  * GET /gameVotes/{appointmentId}
    Gibt alle Votes für einen Termin zurück.
-
-### FOOD DIRECTIONS & CHOICES
-
- * GET /foodDirections
-   Listet alle Essensrichtungen auf.
-
- * POST /foodChoices/insert/{appointmentId}/{playerId}/{foodDirectionId}
-   Fügt eine Essenswahl für einen Termin hinzu.
-
- * GET /foodChoices/{appointmentId}
-   Listet alle Essenswahlen für einen Termin auf.
-
- * GET /foodChoices/{appointmentId}/{playerId}
-   Gibt die Essenswahl eines Spielers für einen Termin zurück.
 
 ### EVALUATIONS
 
