@@ -11,7 +11,7 @@ data class GameVote(
     @SerialName("game_suggestion_id")
     val gameSuggestionId: Long,
     @SerialName("vote_value")
-    val value: Boolean
+    var value: Boolean
 ) {
     fun toJson(): String {
         return Json.encodeToString(this)

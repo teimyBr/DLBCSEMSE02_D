@@ -12,3 +12,6 @@ val Pink40 = Color(0xFF7D5260)
 
 val BackgroundColorGames = Color(159, 168, 218, 70)
 val BackgroundColorGamesThick = Color(159, 168, 218, 100)
+
+val DarkRed = Color(220, 47, 47, 100)
+val DarkGreen = Color(76, 190, 80, 100)

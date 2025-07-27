@@ -73,4 +73,14 @@
     <string name="participate_success">Erfolgreich angemeldet</string>
     <string name="participate_partial_success">Erfolgreich angemeldet, spiel vorschläge nicht hinzugefügt</string>
     <string name="participate_failure">Fehler beim anmelden für den Termin</string>
+
+    <string name="infos_title">Infos zum Event</string>
+    <string name="infos_subtitle">Am %1$s um %2$s Uhr bei %3$s</string>
+    <string name="infos_participants">Teilnehmer</string>
+    <string name="infos_suggested_games">Vorgeschlagene Spiele</string>
+    <string name="infos_messages">Sonstige Nachrichten</string>
+    <string name="infos_suggest_game">Weiteres Spiel vorschlagen</string>
+    <string name="infos_write_message">Nachricht schreiben</string>
+    <string name="infos_for">Dafür</string>
+    <string name="infos_against">Dagegen</string>
 </resources>
