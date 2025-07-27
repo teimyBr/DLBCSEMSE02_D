@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.boardgamer.R
 import com.boardgamer.model.SessionManager
 import com.boardgamer.viewmodel.AppointmentDetails
+import com.boardgamer.viewmodel.AppointmentInfosViewModel
 import com.boardgamer.viewmodel.ParticipateViewModel
 import java.time.format.DateTimeFormatter
 import kotlin.time.ExperimentalTime
@@ -151,9 +152,7 @@ private fun FutureAppointmentButtons(
     ) {
         Button(
             onClick = {
-
-                //Code zum Anzeigen weiterer Informationen kommen hier hin
-
+                navController.navigate(AppointmentInfosViewModel.SCREEN_NAME + "/${SessionManager.currentPlayer.id}/$appointmentId")
             },
             modifier = Modifier.weight(1f),
             shape = RectangleShape
