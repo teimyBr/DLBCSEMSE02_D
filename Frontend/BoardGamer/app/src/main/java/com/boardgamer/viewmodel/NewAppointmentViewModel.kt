@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.boardgamer.R
 import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Appointment
-import com.boardgamer.model.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,6 +47,12 @@ class NewAppointmentViewModel : ViewModel() {
     private val _saveState = MutableStateFlow<SaveState>(SaveState.Idle)
     val saveState = _saveState.asStateFlow()
 
+    private var hostId: Long = -1
+
+    fun initialize(playerId: Long) {
+        this.hostId = playerId
+    }
+
     fun onDateChange(newDate: String) {
         _date.value = newDate
     }
@@ -75,12 +80,17 @@ class NewAppointmentViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _saveState.value = SaveState.Loading
 
-            val hostId = SessionManager.currentPlayer.id
+            if (hostId == -1L) {
+                _saveState.value = SaveState.Error(R.string.error_saving_appointment)
+                return@launch
+            }
+
+            val host = backend.getPlayer(hostId)
 
             val finalLocation = if (_isLocationDifferent.value) {
                 _customLocation.value
             } else {
-                SessionManager.currentPlayer.location
+                host?.location ?: ""
             }
 
             if (finalLocation.isBlank()) {
@@ -108,7 +118,7 @@ class NewAppointmentViewModel : ViewModel() {
                 }
 
             } catch (e: Exception) {
-                Log.e(TAG, "Couldn't parse the entered time & date values", e)
+                Log.e(TAG, "Error", e)
                 _saveState.value = SaveState.Error(R.string.error_invalid_date_time)
             }
         }

@@ -22,7 +22,7 @@ import com.boardgamer.viewmodel.SaveState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewAppointment(navController: NavController) {
+fun NewAppointment(navController: NavController, playerId: Long) {
     val viewModel: NewAppointmentViewModel = viewModel()
 
     val date by viewModel.date.collectAsState()
@@ -30,12 +30,17 @@ fun NewAppointment(navController: NavController) {
     val notes by viewModel.notes.collectAsState()
     val isLocationDifferent by viewModel.isLocationDifferent.collectAsState()
     val customLocation by viewModel.customLocation.collectAsState()
-    val saveState by viewModel.saveState.collectAsState()
 
-    LaunchedEffect(saveState) {
-        if (saveState is SaveState.Success) {
-            viewModel.resetSaveState()
-            navController.popBackStack()
+    LaunchedEffect(key1 = playerId) {
+        viewModel.initialize(playerId)
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.saveState.collect { state ->
+            if (state is SaveState.Success) {
+                navController.popBackStack()
+                viewModel.resetSaveState()
+            }
         }
     }
 
@@ -51,6 +56,7 @@ fun NewAppointment(navController: NavController) {
             )
         }
     ) { innerPadding ->
+        val saveState by viewModel.saveState.collectAsState()
         Column(
             modifier = Modifier
                 .fillMaxSize()

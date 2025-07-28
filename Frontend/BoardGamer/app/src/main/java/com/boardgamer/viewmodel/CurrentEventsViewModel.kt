@@ -2,12 +2,14 @@ package com.boardgamer.viewmodel
 
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boardgamer.R
 import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Appointment
-import com.boardgamer.model.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,29 +46,42 @@ class CurrentEventsViewModel : ViewModel() {
     private val _appointmentsState = MutableStateFlow<AppointmentsState>(AppointmentsState.Loading)
     val appointmentsState = _appointmentsState.asStateFlow()
 
-    var isNextHost = false
+    var isNextHost by mutableStateOf(false)
+        private set
 
-    init {
+    private var currentPlayerId: Long = -1L
+
+    init {}
+
+    fun initialize(playerId: Long) {
+        if (this.currentPlayerId == playerId && _appointmentsState.value is AppointmentsState.Success) return
+
+        this.currentPlayerId = playerId
         loadAppointmentsWithHostNames()
+
         viewModelScope.launch(Dispatchers.IO) {
-            isNextHost = backend.isNextHost(SessionManager.currentPlayer.id)
+            isNextHost = backend.isNextHost(playerId)
         }
     }
 
     fun refreshAppointments() {
-        loadAppointmentsWithHostNames()
+        if (currentPlayerId != -1L) {
+            loadAppointmentsWithHostNames()
+        }
     }
 
     private fun loadAppointmentsWithHostNames() {
+        if (currentPlayerId == -1L) return
+
         viewModelScope.launch(Dispatchers.IO) {
-            val playerAppointments = backend.getPlayerAppointments()
             _appointmentsState.value = AppointmentsState.Loading
             try {
+                val playerAppointments = backend.getPlayerAppointments()
                 val appointments = backend.getAppointments()
                 val appointmentDetails = appointments.map { appointment ->
                     val player = backend.getPlayer(appointment.hostId)
-                    val canParticipate = SessionManager.currentPlayer.id != appointment.hostId
-                            && playerAppointments.none { it.playerId == SessionManager.currentPlayer.id && it.appointmentId == appointment.id }
+                    val canParticipate = currentPlayerId != appointment.hostId
+                            && playerAppointments.none { it.playerId == currentPlayerId && it.appointmentId == appointment.id }
                     AppointmentDetails(
                         appointment = appointment,
                         hostName = player?.name ?: "Unbekannt",

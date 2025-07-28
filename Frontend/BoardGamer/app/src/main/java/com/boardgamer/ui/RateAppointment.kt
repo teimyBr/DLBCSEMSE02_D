@@ -28,9 +28,9 @@ import com.boardgamer.R
 import com.boardgamer.viewmodel.RateAppointmentViewModel
 
 @Composable
-fun RateAppointment(callback: () -> Unit, playerId: Long, appointmentId: Long) {
+fun RateAppointment(onDismissRequest: () -> Unit, playerId: Long, appointmentId: Long) {
     val viewModel = viewModel<RateAppointmentViewModel>()
-    viewModel.setup(callback, playerId, appointmentId)
+    viewModel.setup(onDismissRequest, playerId, appointmentId)
 
     val ratingHost by viewModel.ratingHost.collectAsState()
     val ratingFood by viewModel.ratingFood.collectAsState()

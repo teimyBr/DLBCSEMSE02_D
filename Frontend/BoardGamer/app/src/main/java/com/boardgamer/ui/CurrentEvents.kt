@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -43,6 +44,7 @@ import com.boardgamer.viewmodel.AppointmentsState
 import com.boardgamer.viewmodel.CurrentEventsViewModel
 import com.boardgamer.viewmodel.GameLibraryViewModel
 import com.boardgamer.viewmodel.NewAppointmentViewModel
+import com.boardgamer.viewmodel.ProfileViewModel
 import kotlinx.datetime.number
 
 fun kotlinx.datetime.LocalDate.toJavaLocalDate(): java.time.LocalDate =
@@ -53,9 +55,14 @@ fun kotlinx.datetime.LocalDateTime.toJavaLocalDateTime(): java.time.LocalDateTim
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CurrentEvents(navController: NavController) {
+fun CurrentEvents(navController: NavController, playerId: Long) {
+
     val viewModel: CurrentEventsViewModel = viewModel()
     val appointmentsState by viewModel.appointmentsState.collectAsState()
+
+    LaunchedEffect(playerId) {
+        viewModel.initialize(playerId)
+    }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -83,7 +90,7 @@ fun CurrentEvents(navController: NavController) {
                 actions = {
                     IconButton(onClick = {
 
-                        // Hier kommt der Code zum Aufrufen des eigenen Profils rein
+                        navController.navigate(ProfileViewModel.SCREEN_NAME + "/$playerId")
 
                     }) {
                         Icon(
@@ -107,7 +114,7 @@ fun CurrentEvents(navController: NavController) {
                             modifier = Modifier
                                 .weight(1f)
                                 .clickable {
-                                    navController.navigate(NewAppointmentViewModel.SCREEN_NAME)
+                                    navController.navigate(NewAppointmentViewModel.SCREEN_NAME + "/$playerId")
                                 }
                                 .padding(vertical = 8.dp)
                         ) {
@@ -158,7 +165,7 @@ fun CurrentEvents(navController: NavController) {
                 }
 
                 is AppointmentsState.Success -> {
-                    AppointmentList(state.appointments, navController)
+                    AppointmentList(state.appointments, navController, playerId)
                 }
 
                 is AppointmentsState.Error -> {
@@ -175,13 +182,22 @@ fun CurrentEvents(navController: NavController) {
 }
 
 @Composable
-fun AppointmentList(appointments: List<AppointmentDetails>, navController: NavController) {
+fun AppointmentList(
+    appointments: List<AppointmentDetails>,
+    navController: NavController,
+    playerId: Long
+) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(appointments) { appointmentDetails ->
-            AppointmentCard(appointmentDetails, true, navController)
+            AppointmentCard(
+                appointmentDetails = appointmentDetails,
+                showButtons = true,
+                navController = navController,
+                playerId = playerId
+            )
         }
     }
 }
