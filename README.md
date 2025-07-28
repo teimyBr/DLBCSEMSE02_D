@@ -25,7 +25,7 @@ Link zum Testen des Prototyps: https://www.figma.com/proto/Q4iVmpl5158N9qSRTyhGi
 
 ## ER-Diagramm der Datenbankstruktur
 
-<img width="1809" height="1353" alt="ER-Diagramm" src="https://github.com/user-attachments/assets/9719f04e-05af-4056-af2c-1aff4c560ee2" />
+<img width="1060" height="900" alt="ER-Diagramm Projekt" src="https://github.com/user-attachments/assets/1ac6e6ee-0caf-4217-a5a8-03f1bd53d5a1" />
 
 ## C4 Diagramm
 
