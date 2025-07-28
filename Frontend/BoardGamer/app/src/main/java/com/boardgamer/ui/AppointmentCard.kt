@@ -11,23 +11,23 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.boardgamer.R
+import com.boardgamer.model.DateTimeFormats
+import com.boardgamer.ui.theme.GreenButton
 import com.boardgamer.viewmodel.AppointmentDetails
 import com.boardgamer.viewmodel.AppointmentInfosViewModel
 import com.boardgamer.viewmodel.ParticipateViewModel
-import java.time.format.DateTimeFormatter
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -43,9 +43,6 @@ fun AppointmentCard(
     val isPast = appointment.date.toJavaLocalDate() < today
     val titleResourceId = if (isPast) R.string.past_event_hostname else R.string.next_event_hostname
 
-    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -58,6 +55,7 @@ fun AppointmentCard(
                     id = titleResourceId,
                     appointmentDetails.hostName
                 ),
+                style = MaterialTheme.typography.titleMedium
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -65,17 +63,21 @@ fun AppointmentCard(
             Text(
                 text = stringResource(
                     id = R.string.event_date,
-                    appointment.date.toJavaLocalDate().format(dateFormatter)
-                )
+                    appointment.date.toJavaLocalDate().format(DateTimeFormats.dateFormatter)
+                ),
+                style = MaterialTheme.typography.bodyMedium
             )
             Text(
                 text = stringResource(
                     id = R.string.event_time,
-                    appointment.timestamp.toJavaLocalDateTime().format(timeFormatter)
-                )
+                    appointment.timestamp.toJavaLocalDateTime()
+                        .format(DateTimeFormats.timeFormatter)
+                ),
+                style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                text = stringResource(id = R.string.event_location, appointment.location)
+                text = stringResource(id = R.string.event_location, appointment.location),
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -110,16 +112,6 @@ private fun PastAppointmentButtons(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Surface(
-            modifier = Modifier.padding(vertical = 4.dp)
-
-        ) {
-            Text(
-                text = stringResource(id = R.string.event_isPast),
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
         Button(
             onClick = {
                 appointmentDetails.updateOpenDialog()
@@ -127,12 +119,13 @@ private fun PastAppointmentButtons(
             shape = RectangleShape,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF4CAF50)
+                containerColor = GreenButton
             )
 
         ) {
             Text(
-                text = stringResource(id = R.string.event_set_evaluation)
+                text = stringResource(id = R.string.event_set_evaluation),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
@@ -164,7 +157,8 @@ private fun FutureAppointmentButtons(
             shape = RectangleShape
         ) {
             Text(
-                text = stringResource(id = R.string.event_show_informations)
+                text = stringResource(id = R.string.event_show_informations),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
         if (canParticipate) {
@@ -176,7 +170,8 @@ private fun FutureAppointmentButtons(
                 shape = RectangleShape
             ) {
                 Text(
-                    text = stringResource(id = R.string.event_participate)
+                    text = stringResource(id = R.string.event_participate),
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }

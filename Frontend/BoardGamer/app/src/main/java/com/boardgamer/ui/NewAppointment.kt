@@ -1,10 +1,29 @@
 package com.boardgamer.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -13,10 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.R
+import com.boardgamer.ui.theme.GreenButton
 import com.boardgamer.viewmodel.NewAppointmentViewModel
 import com.boardgamer.viewmodel.SaveState
 
@@ -50,7 +71,10 @@ fun NewAppointment(navController: NavController, playerId: Long) {
                 title = { Text(stringResource(id = R.string.new_appointment_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.close))
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(id = R.string.close)
+                        )
                     }
                 }
             )
@@ -67,41 +91,61 @@ fun NewAppointment(navController: NavController, playerId: Long) {
             OutlinedTextField(
                 value = date,
                 onValueChange = { viewModel.onDateChange(it) },
-                label = { Text(
-                    text = stringResource(id = R.string.date_label))
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.date_label),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 },
-                placeholder = { Text(
-                    text = stringResource(id = R.string.placeholder_date)
-                )},
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.placeholder_date),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = time,
                 onValueChange = { viewModel.onTimeChange(it) },
-                label = { Text(
-                    text = stringResource(id = R.string.time_label)
-                ) },
-                placeholder = { Text(
-                    text = stringResource(id = R.string.placeholder_time)
-                )},
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.time_label),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.placeholder_time),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = notes,
                 onValueChange = { viewModel.onNotesChange(it) },
-                label = { Text(
-                    text = stringResource(id = R.string.notes_label)
-                ) },
-                placeholder = { Text(
-                    text = stringResource(id = R.string.notes_placeholder)
-                ) },
-                modifier = Modifier.fillMaxWidth().height(120.dp)
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.notes_label),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.notes_placeholder),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -116,7 +160,8 @@ fun NewAppointment(navController: NavController, playerId: Long) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(id = R.string.location_switch_label)
+                    text = stringResource(id = R.string.location_switch_label),
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
 
@@ -126,7 +171,12 @@ fun NewAppointment(navController: NavController, playerId: Long) {
                     OutlinedTextField(
                         value = customLocation,
                         onValueChange = { viewModel.onCustomLocationChange(it) },
-                        label = { Text(stringResource(id = R.string.custom_location_label)) },
+                        label = {
+                            Text(
+                                stringResource(id = R.string.custom_location_label),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -138,7 +188,8 @@ fun NewAppointment(navController: NavController, playerId: Long) {
                 Text(
                     text = stringResource(id = (saveState as SaveState.Error).messageResId),
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
@@ -146,12 +197,15 @@ fun NewAppointment(navController: NavController, playerId: Long) {
                 onClick = { viewModel.saveAppointment() },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = saveState !is SaveState.Loading,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
             ) {
                 if (saveState is SaveState.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
                 } else {
-                    Text(stringResource(id = R.string.create_appointment_button))
+                    Text(
+                        stringResource(id = R.string.create_appointment_button),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
         }

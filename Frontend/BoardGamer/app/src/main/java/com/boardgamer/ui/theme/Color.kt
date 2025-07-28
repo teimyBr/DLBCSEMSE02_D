@@ -15,3 +15,5 @@ val BackgroundColorGamesThick = Color(159, 168, 218, 100)
 
 val DarkRed = Color(220, 47, 47, 100)
 val DarkGreen = Color(76, 190, 80, 100)
+
+val GreenButton = Color(0xFF4CAF50)
