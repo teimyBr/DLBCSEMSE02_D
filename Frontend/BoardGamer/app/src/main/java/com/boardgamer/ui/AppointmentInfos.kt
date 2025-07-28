@@ -47,6 +47,7 @@ import com.boardgamer.ui.theme.DarkGreen
 import com.boardgamer.ui.theme.DarkRed
 import com.boardgamer.viewmodel.AppointmentInfosViewModel
 import com.boardgamer.viewmodel.GameVoteItem
+import com.boardgamer.viewmodel.NewMessageViewModel
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -213,7 +214,7 @@ fun AppointmentInfos(navController: NavController, playerId: Long, appointmentId
 
                     Button(
                         onClick = {
-                            //Navigate to the add message screen
+                            navController.navigate("${NewMessageViewModel.SCREEN_NAME}/$playerId/$appointmentId")
                         }
                     ) {
                         Text(

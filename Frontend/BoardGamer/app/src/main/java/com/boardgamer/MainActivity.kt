@@ -13,6 +13,7 @@ import com.boardgamer.ui.CurrentEvents
 import com.boardgamer.ui.GameLibrary
 import com.boardgamer.ui.Home
 import com.boardgamer.ui.NewAppointment
+import com.boardgamer.ui.NewMessage
 import com.boardgamer.ui.Participate
 import com.boardgamer.ui.Profile
 import com.boardgamer.ui.Registration
@@ -22,6 +23,7 @@ import com.boardgamer.viewmodel.CurrentEventsViewModel
 import com.boardgamer.viewmodel.GameLibraryViewModel
 import com.boardgamer.viewmodel.HomeViewModel
 import com.boardgamer.viewmodel.NewAppointmentViewModel
+import com.boardgamer.viewmodel.NewMessageViewModel
 import com.boardgamer.viewmodel.ParticipateViewModel
 import com.boardgamer.viewmodel.ProfileViewModel
 import com.boardgamer.viewmodel.RegistrationViewModel
@@ -73,6 +75,11 @@ fun AppNavigation() {
             val playerId = it.arguments!!.getString("playerId")!!.toLong()
             val appointmentId = it.arguments!!.getString("appointmentId")!!.toLong()
             AppointmentInfos(navController, playerId, appointmentId)
+        }
+        composable(NewMessageViewModel.SCREEN_NAME + "/{playerId}/{appointmentId}") { backStackEntry ->
+            val playerId = backStackEntry.arguments!!.getString("playerId")!!.toLong()
+            val appointmentId = backStackEntry.arguments!!.getString("appointmentId")!!.toLong()
+            NewMessage(navController, playerId, appointmentId)
         }
     }
 }

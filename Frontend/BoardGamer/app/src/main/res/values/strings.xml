@@ -84,6 +84,15 @@
     <string name="infos_for">Dafür</string>
     <string name="infos_against">Dagegen</string>
 
+    <string name="message_quick">Schnellnachricht</string>
+    <string name="message_quick_15">Verspäte mich um 15 Minuten</string>
+    <string name="message_quick_30">Verspäte mich um 30 Minuten</string>
+    <string name="message_quick_45">Verspäte mich um 45 Minuten</string>
+    <string name="message_quick_60">Verspäte mich um mehr als 60 Minuten</string>
+    <string name="message_own">Deine Nachricht</string>
+    <string name="message_post">Nachricht schreiben</string>
+    <string name="message_headline">Nachricht schreiben</string>
+
     <string name="profile_welcome_message">Hallo %1$s!</string>
     <string name="playergroup">Eure Spielergruppe:</string>
     <string name="about_boardgamer">Über Boardgamer</string>
