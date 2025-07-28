@@ -43,7 +43,6 @@ CREATE TABLE "evaluation" (
   "id" integer PRIMARY KEY,
   "player_id" integer,
   "appointment_id" integer,
-  "meal_evaluation" integer,
   "host_evaluation" integer,
   "overall_evaluation" integer
 );
@@ -139,13 +138,13 @@ INSERT INTO game_vote (player_id, game_suggestion_id, vote_value) VALUES
   (6, 5, TRUE);
 
 -- evaluation
-INSERT INTO evaluation (id, player_id, appointment_id, meal_evaluation, host_evaluation, overall_evaluation) VALUES
-  (1, 1, 1, 5, 4, 5),
-  (2, 2, 1, 4, 5, 4),
-  (3, 3, 1, 3, 4, 3),
-  (4, 2, 2, 5, 5, 5),
-  (5, 3, 2, 4, 4, 4),
-  (6, 4, 2, 3, 3, 3);
+INSERT INTO evaluation (id, player_id, appointment_id, host_evaluation, overall_evaluation) VALUES
+  (1, 1, 1, 4, 5),
+  (2, 2, 1, 5, 4),
+  (3, 3, 1, 4, 3),
+  (4, 2, 2, 5, 5),
+  (5, 3, 2, 4, 4),
+  (6, 4, 2, 3, 3);
 
 -- message
 INSERT INTO message (id, message_from_player_id, appointment_id, timestamp, message_content) VALUES
