@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -52,7 +53,6 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AppointmentInfos(navController: NavController, playerId: Long, appointmentId: Long) {
     val viewModel = viewModel<AppointmentInfosViewModel>()
-    viewModel.setState(playerId, appointmentId)
 
     val participants by viewModel.participants.collectAsState()
     val games by viewModel.gameSuggestion.collectAsState()
@@ -61,6 +61,10 @@ fun AppointmentInfos(navController: NavController, playerId: Long, appointmentId
 
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+    LaunchedEffect(key1 = playerId, key2 = appointmentId) {
+        viewModel.setState(playerId, appointmentId)
+    }
 
     Scaffold(
         topBar = {

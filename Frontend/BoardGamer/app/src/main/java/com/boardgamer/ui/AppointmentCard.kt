@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.boardgamer.R
-import com.boardgamer.model.SessionManager
 import com.boardgamer.viewmodel.AppointmentDetails
 import com.boardgamer.viewmodel.AppointmentInfosViewModel
 import com.boardgamer.viewmodel.ParticipateViewModel
@@ -36,7 +35,8 @@ import kotlin.time.ExperimentalTime
 fun AppointmentCard(
     appointmentDetails: AppointmentDetails,
     showButtons: Boolean,
-    navController: NavController
+    navController: NavController,
+    playerId: Long
 ) {
     val appointment = appointmentDetails.appointment
     val today = java.time.LocalDate.now()
@@ -82,12 +82,16 @@ fun AppointmentCard(
 
             if (showButtons) {
                 if (isPast) {
-                    PastAppointmentButtons(appointmentDetails)
+                    PastAppointmentButtons(
+                        appointmentDetails = appointmentDetails,
+                        playerId = playerId
+                    )
                 } else {
                     FutureAppointmentButtons(
-                        appointmentDetails.appointment.id,
-                        navController,
-                        appointmentDetails.canParticipate
+                        appointmentId = appointmentDetails.appointment.id,
+                        canParticipate = appointmentDetails.canParticipate,
+                        navController = navController,
+                        playerId = playerId
                     )
                 }
             }
@@ -97,7 +101,8 @@ fun AppointmentCard(
 
 @Composable
 private fun PastAppointmentButtons(
-    appointmentDetails: AppointmentDetails
+    appointmentDetails: AppointmentDetails,
+    playerId: Long
 ) {
     val openDialog by appointmentDetails.openDialog.collectAsState()
 
@@ -133,9 +138,9 @@ private fun PastAppointmentButtons(
     }
     when {
         openDialog -> RateAppointment(
-            appointmentDetails::updateOpenDialog,
-            SessionManager.currentPlayer.id,
-            appointmentDetails.appointment.id
+            onDismissRequest = appointmentDetails::updateOpenDialog,
+            playerId = playerId,
+            appointmentId = appointmentDetails.appointment.id
         )
     }
 }
@@ -143,8 +148,9 @@ private fun PastAppointmentButtons(
 @Composable
 private fun FutureAppointmentButtons(
     appointmentId: Long,
+    canParticipate: Boolean,
     navController: NavController,
-    canParticipate: Boolean
+    playerId: Long
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -152,7 +158,7 @@ private fun FutureAppointmentButtons(
     ) {
         Button(
             onClick = {
-                navController.navigate(AppointmentInfosViewModel.SCREEN_NAME + "/${SessionManager.currentPlayer.id}/$appointmentId")
+                navController.navigate("${AppointmentInfosViewModel.SCREEN_NAME}/$playerId/$appointmentId")
             },
             modifier = Modifier.weight(1f),
             shape = RectangleShape
@@ -164,7 +170,7 @@ private fun FutureAppointmentButtons(
         if (canParticipate) {
             Button(
                 onClick = {
-                    navController.navigate(ParticipateViewModel.SCREEN_NAME + "/$appointmentId")
+                    navController.navigate("${ParticipateViewModel.SCREEN_NAME}/$playerId/$appointmentId")
                 },
                 modifier = Modifier.weight(1f),
                 shape = RectangleShape

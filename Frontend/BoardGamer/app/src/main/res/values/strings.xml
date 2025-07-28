@@ -83,4 +83,17 @@
     <string name="infos_write_message">Nachricht schreiben</string>
     <string name="infos_for">Dafür</string>
     <string name="infos_against">Dagegen</string>
+
+    <string name="profile_welcome_message">Hallo %1$s!</string>
+    <string name="playergroup">Eure Spielergruppe:</string>
+    <string name="about_boardgamer">Über Boardgamer</string>
+    <string name="about_boardgamer_text">Ein IU-Projekt - entwickelt von Timo, Lucas und Erik</string>
+    <string name="logout">Abmelden</string>
+    <string name="next_host_announcement">Nächster Gastgeber: %1$s</string>
+    <string name="next_host_pending">Der nächste Gastgeber wird noch ermittelt.</string>
+    <string name="last_event">Dein letzter geplanter Abend</string>
+    <string name="last_event_date">Am %1$s</string>
+    <string name="rating_label_host">Gastgeber</string>
+    <string name="rating_label_general">Allgemein</string>
+    <string name="rating_percentage">%1$d %%</string>
 </resources>

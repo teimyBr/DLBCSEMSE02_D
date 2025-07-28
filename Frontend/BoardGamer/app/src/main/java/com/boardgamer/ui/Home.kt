@@ -43,8 +43,10 @@ fun Home(navController: NavController) {
 
     LaunchedEffect(loginState) {
         if (loginState is LoginState.Success) {
-            navController.navigate(CurrentEventsViewModel.SCREEN_NAME) {
-                popUpTo("Home") { inclusive = true }
+            val playerId = (loginState as LoginState.Success).player.id
+
+            navController.navigate(CurrentEventsViewModel.SCREEN_NAME + "/$playerId") {
+                popUpTo(HomeViewModel.SCREEN_NAME) { inclusive = true }
             }
             viewModel.resetState()
         }

@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,11 +42,15 @@ import com.boardgamer.viewmodel.ParticipateViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Participate(navController: NavController, appointmentId: Long) {
-    val viewModel = viewModel<ParticipateViewModel>()
+fun Participate(navController: NavController, playerId: Long, appointmentId: Long) {
+    val viewModel: ParticipateViewModel = viewModel()
     viewModel.setAppointment(appointmentId)
     val appointmentDetails by viewModel.appointmentDetails.collectAsState()
     val gameList by viewModel.gameList.collectAsState()
+
+    LaunchedEffect(playerId, appointmentId) {
+        viewModel.initialize(playerId, appointmentId)
+    }
 
     Scaffold(
         topBar = {
@@ -88,7 +93,7 @@ fun Participate(navController: NavController, appointmentId: Long) {
                 .padding(innerPadding)
                 .padding(10.dp)
         ) {
-            AppointmentCard(appointmentDetails, false, navController)
+            AppointmentCard(appointmentDetails = appointmentDetails, showButtons = false, navController = navController, playerId = playerId)
 
             Spacer(Modifier.height(15.dp))
 

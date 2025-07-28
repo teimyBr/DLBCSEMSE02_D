@@ -10,7 +10,6 @@ import com.boardgamer.model.Appointment
 import com.boardgamer.model.Game
 import com.boardgamer.model.GameSuggestion
 import com.boardgamer.model.PlayerAppointment
-import com.boardgamer.model.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -54,6 +53,13 @@ class ParticipateViewModel(application: Application) : AndroidViewModel(applicat
     private val gameListFlow = MutableStateFlow<List<GameSuggestionItem>>(listOf())
     val gameList = gameListFlow.asStateFlow()
 
+    private var currentPlayerId: Long = -1L
+
+    fun initialize(playerId: Long, appointmentId: Long) {
+        this.currentPlayerId = playerId
+        setAppointment(appointmentId)
+    }
+
     fun setAppointment(appointmentId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val appointment = backend.getAppointments().first { it.id == appointmentId }
@@ -82,8 +88,8 @@ class ParticipateViewModel(application: Application) : AndroidViewModel(applicat
             val successAddSuggestions = backend.addGameSuggestions(gameSuggestions)
             val successParticipate = backend.addPlayerAppointment(
                 PlayerAppointment(
-                    SessionManager.currentPlayer.id,
-                    appointment.id
+                    playerId = currentPlayerId,
+                    appointmentId = appointment.id
                 )
             )
 
