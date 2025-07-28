@@ -96,4 +96,5 @@
     <string name="rating_label_host">Gastgeber</string>
     <string name="rating_label_general">Allgemein</string>
     <string name="rating_percentage">%1$d %%</string>
+    <string name="rating_label_food">Essen</string>
 </resources>

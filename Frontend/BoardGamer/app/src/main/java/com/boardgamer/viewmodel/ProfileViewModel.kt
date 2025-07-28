@@ -26,6 +26,7 @@ data class ProfileUiState(
 data class LastEventDetails(
     val date: String,
     val hostRating: Int,
+    val foodRating: Int,
     val generalRating: Int
 )
 
@@ -59,8 +60,9 @@ class ProfileViewModel() : ViewModel() {
             if (lastHostedAppointment != null) {
                 val evaluations = backend.getEvaluations(lastHostedAppointment.id)
                 if (evaluations.isNotEmpty()) {
-                    val hostRating = (evaluations.map { it.hostEvaluation }.average() * 10).toInt()
-                    val generalRating = (evaluations.map { it.overallEvaluation }.average() * 10).toInt()
+                    val hostRating = (evaluations.map { it.hostEvaluation }.average() * 20).toInt()
+                    val foodRating = (evaluations.map { it.mealEvaluation }.average() * 20).toInt()
+                    val generalRating = (evaluations.map { it.overallEvaluation }.average() * 20).toInt()
 
                     val formattedDate = lastHostedAppointment.date.toJavaLocalDate()
                         .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
@@ -68,6 +70,7 @@ class ProfileViewModel() : ViewModel() {
                     lastEventDetails = LastEventDetails(
                         date = formattedDate,
                         hostRating = hostRating,
+                        foodRating = foodRating,
                         generalRating = generalRating
                     )
                 }

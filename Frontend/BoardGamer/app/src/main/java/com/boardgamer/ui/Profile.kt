@@ -141,6 +141,7 @@ fun LastEventSection(lastEvent: LastEventDetails?) {
                         text = stringResource(id = R.string.last_event_date, lastEvent.date)
                     )
                     RatingBar(R.string.rating_label_host, lastEvent.hostRating)
+                    RatingBar(R.string.rating_label_food, lastEvent.foodRating)
                     RatingBar(R.string.rating_label_general, lastEvent.generalRating)
                 }
             }
