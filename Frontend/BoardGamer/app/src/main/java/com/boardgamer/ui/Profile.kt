@@ -2,15 +2,39 @@ package com.boardgamer.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,15 +42,14 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.R
 import com.boardgamer.model.Player
 import com.boardgamer.viewmodel.HomeViewModel
 import com.boardgamer.viewmodel.LastEventDetails
-import com.boardgamer.viewmodel.ProfileViewModel
 import com.boardgamer.viewmodel.ProfileUiState
+import com.boardgamer.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,9 +73,11 @@ fun Profile(navController: NavController, playerId: Long) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(
-                    text = stringResource(R.string.profile_welcome_message, uiState.userName)
-                )},
+                title = {
+                    Text(
+                        text = stringResource(R.string.profile_welcome_message, uiState.userName)
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -88,17 +113,20 @@ fun PlayerGroupSection(uiState: ProfileUiState) {
     val nextHost = uiState.nextHost
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.Start)
+        horizontalAlignment = Alignment.Start
+    )
     {
         Text(
-            text = stringResource(id = R.string.playergroup)
+            text = stringResource(id = R.string.playergroup),
+            style = MaterialTheme.typography.titleMedium
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(
-                Modifier.padding(16.dp))
+                Modifier.padding(16.dp)
+            )
             {
                 if (uiState.playerGroup.isEmpty()) {
                     CircularProgressIndicator()
@@ -117,7 +145,7 @@ fun PlayerGroupSection(uiState: ProfileUiState) {
                 } else {
                     stringResource(R.string.next_host_pending)
                 }
-                Text(text = textToShow)
+                Text(text = textToShow, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
@@ -128,7 +156,8 @@ fun LastEventSection(lastEvent: LastEventDetails?) {
     if (lastEvent != null) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
             Text(
-                text = stringResource(id = R.string.last_event)
+                text = stringResource(id = R.string.last_event),
+                style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -138,7 +167,8 @@ fun LastEventSection(lastEvent: LastEventDetails?) {
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = stringResource(id = R.string.last_event_date, lastEvent.date)
+                        text = stringResource(id = R.string.last_event_date, lastEvent.date),
+                        style = MaterialTheme.typography.titleMedium
                     )
                     RatingBar(R.string.rating_label_host, lastEvent.hostRating)
                     RatingBar(R.string.rating_label_food, lastEvent.foodRating)
@@ -157,10 +187,12 @@ fun RatingBar(@StringRes labelResId: Int, percentage: Int) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = stringResource(id = labelResId)
+            text = stringResource(id = labelResId),
+            style = MaterialTheme.typography.bodyMedium
         )
         Text(
             text = stringResource(id = R.string.rating_percentage, percentage),
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )
     }
@@ -178,7 +210,7 @@ fun PlayerIcon(player: Player) {
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .padding(8.dp)
         )
-        Text(player.name, fontSize = 12.sp)
+        Text(player.name, style = MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -190,20 +222,28 @@ fun ActionButtons(viewModel: ProfileViewModel) {
     if (showAboutDialog.value) {
         AlertDialog(
             onDismissRequest = { showAboutDialog.value = false },
-            title = { Text(
-                text = stringResource(id = R.string.about_boardgamer)
-            ) },
-            text = { Text(
-                text = stringResource(id = R.string.about_boardgamer_text)
-            ) },
+            title = {
+                Text(
+                    text = stringResource(id = R.string.about_boardgamer)
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(id = R.string.about_boardgamer_text),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
             confirmButton = {
-                Button(onClick = {
-                    showAboutDialog.value = false
-                },
-                    shape = RectangleShape)
+                Button(
+                    onClick = {
+                        showAboutDialog.value = false
+                    },
+                    shape = RectangleShape
+                )
                 {
                     Text(
-                        text = stringResource(id = R.string.close)
+                        text = stringResource(id = R.string.close),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
@@ -213,14 +253,15 @@ fun ActionButtons(viewModel: ProfileViewModel) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-    ){
+    ) {
         Button(
             onClick = { showAboutDialog.value = true },
             modifier = Modifier.fillMaxWidth(),
             shape = RectangleShape
         ) {
             Text(
-                text = stringResource(id = R.string.about_boardgamer)
+                text = stringResource(id = R.string.about_boardgamer),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
         Button(
@@ -230,7 +271,8 @@ fun ActionButtons(viewModel: ProfileViewModel) {
             shape = RectangleShape
         ) {
             Text(
-                text = stringResource(id = R.string.logout)
+                text = stringResource(id = R.string.logout),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

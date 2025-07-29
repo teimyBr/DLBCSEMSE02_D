@@ -27,33 +27,43 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.R
 import com.boardgamer.ui.theme.BackgroundColorGames
 import com.boardgamer.ui.theme.GreenButton
-import com.boardgamer.viewmodel.ParticipateViewModel
+import com.boardgamer.viewmodel.SaveState
+import com.boardgamer.viewmodel.SuggestGameViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Participate(navController: NavController, playerId: Long, appointmentId: Long) {
-    val viewModel: ParticipateViewModel = viewModel()
-    viewModel.setAppointment(appointmentId)
-    val appointmentDetails by viewModel.appointmentDetails.collectAsState()
-    val gameList by viewModel.gameList.collectAsState()
+fun SuggestGame(navController: NavController, appointmentId: Long) {
+    val viewModel = viewModel<SuggestGameViewModel>()
+    viewModel.initialize(appointmentId)
+    val games by viewModel.gameList.collectAsState()
+    val subtitle by viewModel.subtitle.collectAsState()
 
-    LaunchedEffect(playerId, appointmentId) {
-        viewModel.initialize(playerId, appointmentId)
+    LaunchedEffect(Unit) {
+        viewModel.saveState.collect {
+            if (it is SaveState.Success) {
+                navController.popBackStack()
+                viewModel.resetSaveState()
+            }
+        }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.participate_title)) },
+                title = {
+                    Text(stringResource(R.string.participate_suggest_game_title))
+                },
                 navigationIcon = {
-                    IconButton(onClick = navController::popBackStack) {
+                    IconButton({ navController.popBackStack() }) {
                         Icon(
                             Icons.Default.Close,
                             contentDescription = stringResource(R.string.close)
@@ -70,17 +80,15 @@ fun Participate(navController: NavController, playerId: Long, appointmentId: Lon
                 horizontalAlignment = Alignment.End
             ) {
                 Button(
-                    onClick = {
-                        viewModel.participate()
-                        navController.popBackStack()
-                    },
+                    onClick = { viewModel.suggest() },
+                    shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = GreenButton
                     )
                 ) {
                     Icon(Icons.Default.Check, contentDescription = "")
                     Text(
-                        stringResource(R.string.participate),
+                        stringResource(R.string.suggest_game_submit),
                         modifier = Modifier,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -92,40 +100,32 @@ fun Participate(navController: NavController, playerId: Long, appointmentId: Lon
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(10.dp)
+                .padding(16.dp)
         ) {
-            AppointmentCard(
-                appointmentDetails = appointmentDetails,
-                showButtons = false,
-                navController = navController,
-                playerId = playerId
-            )
-
-            Spacer(Modifier.height(15.dp))
-
             Text(
-                stringResource(R.string.participate_suggest_game_title),
-                modifier = Modifier,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                stringResource(R.string.participate_suggest_game_subtitle),
+                text = subtitle,
                 modifier = Modifier,
                 style = MaterialTheme.typography.bodyMedium
             )
+            Text(
+                text = stringResource(R.string.suggest_game_note),
+                modifier = Modifier,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
 
-            Spacer(Modifier.height(5.dp))
+            Spacer(Modifier.height(10.dp))
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(BackgroundColorGames)
             ) {
-                items(gameList) { game ->
+                items(games) { game ->
                     GameSuggestionItem(game)
                 }
-
             }
         }
     }
+
 }

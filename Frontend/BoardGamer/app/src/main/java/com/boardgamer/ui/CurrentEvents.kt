@@ -20,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -32,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -124,7 +124,7 @@ fun CurrentEvents(navController: NavController, playerId: Long) {
                             )
                             Text(
                                 text = stringResource(id = R.string.new_event),
-                                fontSize = 12.sp
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     }
@@ -147,7 +147,7 @@ fun CurrentEvents(navController: NavController, playerId: Long) {
                         )
                         Text(
                             text = stringResource(id = R.string.game_lib_title),
-                            fontSize = 12.sp
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }

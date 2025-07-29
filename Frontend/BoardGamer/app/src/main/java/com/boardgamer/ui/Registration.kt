@@ -29,10 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.R
@@ -85,7 +85,7 @@ fun Registration(navController: NavController) {
             Text(
                 text = stringResource(id = R.string.register_for_boardgamer),
                 textAlign = TextAlign.Center,
-                fontSize = 25.sp
+                style = MaterialTheme.typography.headlineSmall
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -95,7 +95,8 @@ fun Registration(navController: NavController) {
                 onValueChange = { viewModel.onUsernameChange(it) },
                 label = {
                     Text(
-                        text = stringResource(R.string.name)
+                        text = stringResource(R.string.name),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 },
                 enabled = registrationState !is RegistrationState.Loading
@@ -108,7 +109,8 @@ fun Registration(navController: NavController) {
                 onValueChange = { viewModel.onEmailChange(it) },
                 label = {
                     Text(
-                        text = stringResource(R.string.email)
+                        text = stringResource(R.string.email),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 },
                 enabled = registrationState !is RegistrationState.Loading
@@ -121,7 +123,8 @@ fun Registration(navController: NavController) {
                 onValueChange = { viewModel.onLocationChange(it) },
                 label = {
                     Text(
-                        text = stringResource(R.string.location)
+                        text = stringResource(R.string.location),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 },
                 enabled = registrationState !is RegistrationState.Loading
@@ -134,7 +137,8 @@ fun Registration(navController: NavController) {
                 onValueChange = { viewModel.onPasswordChange(it) },
                 label = {
                     Text(
-                        text = stringResource(R.string.password)
+                        text = stringResource(R.string.password),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 },
                 visualTransformation = PasswordVisualTransformation(),
@@ -149,7 +153,8 @@ fun Registration(navController: NavController) {
                 onValueChange = { viewModel.onPasswordRepeatChange(it) },
                 label = {
                     Text(
-                        text = stringResource(id = R.string.password_repeat)
+                        text = stringResource(id = R.string.password_repeat),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 },
                 visualTransformation = PasswordVisualTransformation(),
@@ -157,7 +162,9 @@ fun Registration(navController: NavController) {
                 supportingText = {
                     if (passwordsDoNotMatch)
                         Text(
-                            text = stringResource(id = R.string.passwordsDoNotMatch)
+                            text = stringResource(id = R.string.passwordsDoNotMatch),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
                         )
                 },
                 enabled = registrationState !is RegistrationState.Loading
@@ -169,7 +176,8 @@ fun Registration(navController: NavController) {
                 Text(
                     text = (registrationState as RegistrationState.Error).message,
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
@@ -185,7 +193,8 @@ fun Registration(navController: NavController) {
                     )
                 } else {
                     Text(
-                        text = stringResource(R.string.registration)
+                        text = stringResource(R.string.registration),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }

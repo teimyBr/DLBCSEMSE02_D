@@ -106,4 +106,8 @@
     <string name="rating_label_general">Allgemein</string>
     <string name="rating_percentage">%1$d %%</string>
     <string name="rating_label_food">Essen</string>
+
+    <string name="suggest_game_subtitle">Für den %1$s um %2$s Uhr bei %3$s</string>
+    <string name="suggest_game_note">Hinweis: Es werden nur Spiele in der Liste gezeigt welche noch nicht vorgeschlagen wurden</string>
+    <string name="suggest_game_submit">Auswahl vorschlagen</string>
 </resources>

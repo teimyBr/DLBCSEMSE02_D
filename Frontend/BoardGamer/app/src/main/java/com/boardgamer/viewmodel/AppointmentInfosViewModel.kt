@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.boardgamer.R
 import com.boardgamer.api.BackendAPI
 import com.boardgamer.model.Appointment
+import com.boardgamer.model.DateTimeFormats
 import com.boardgamer.model.Game
 import com.boardgamer.model.GameSuggestion
 import com.boardgamer.model.GameVote
@@ -18,7 +19,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.format.DateTimeFormatter
 
 data class GameVoteItem(
     val game: Game,
@@ -30,9 +30,6 @@ class AppointmentInfosViewModel(application: Application) : AndroidViewModel(app
     companion object {
         const val SCREEN_NAME = "Infos"
     }
-
-    private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-    private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
     val backend = BackendAPI()
 
@@ -66,7 +63,9 @@ class AppointmentInfosViewModel(application: Application) : AndroidViewModel(app
         val participantIds =
             backend.getPlayerAppointments().filter { it.appointmentId == appointment.id }
                 .map { it.playerId }
-        val participants = backend.getPlayers().filter { it.id in participantIds }
+        //Participants are players that are registered or the host
+        val participants =
+            backend.getPlayers().filter { it.id in participantIds || it.id == appointment.hostId }
 
         participantFlow.emit(participants)
     }
@@ -106,8 +105,8 @@ class AppointmentInfosViewModel(application: Application) : AndroidViewModel(app
         val hostName = backend.getPlayer(appointment.hostId)!!.name
         val string = context.getString(
             R.string.infos_subtitle,
-            appointment.date.toJavaLocalDate().format(dateFormatter),
-            appointment.timestamp.toJavaLocalDateTime().format(timeFormatter),
+            appointment.date.toJavaLocalDate().format(DateTimeFormats.dateFormatter),
+            appointment.timestamp.toJavaLocalDateTime().format(DateTimeFormats.timeFormatter),
             hostName
         )
         subtitleFlow.emit(string)

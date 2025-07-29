@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -30,8 +30,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -75,19 +75,16 @@ fun GameLibrary(navController: NavController) {
                 modifier = Modifier.padding(10.dp, 5.dp),
                 style = MaterialTheme.typography.bodyLarge
             )
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(10.dp))
             Row {
                 Spacer(Modifier.weight(1f))
-                Button(onClick = {
-                    viewModel.addGame()
-                }) {
-                    Text(
-                        "+",
-                        modifier = Modifier,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(Modifier.width(10.dp))
+                Button(
+                    onClick = {
+                        viewModel.addGame()
+                    },
+                    shape = RectangleShape
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "")
                     Text(
                         stringResource(R.string.add),
                         modifier = Modifier,
@@ -123,7 +120,7 @@ fun GameItem(game: Game) {
         Text(
             text = game.name,
             modifier = Modifier,
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.titleMedium
         )
         Text(
             text = game.description,
@@ -172,9 +169,17 @@ fun AddGameDialog(viewModel: GameLibraryViewModel) {
                 )
 
                 Row {
-                    TextButton(onClick = viewModel::dismissNewGame) { Text(stringResource(R.string.cancel)) }
+                    TextButton(onClick = viewModel::dismissNewGame, shape = RectangleShape) {
+                        Text(
+                            stringResource(R.string.cancel)
+                        )
+                    }
                     Spacer(Modifier.weight(1f))
-                    TextButton(onClick = viewModel::commitNewGame, enabled = commitEnabled) {
+                    TextButton(
+                        onClick = viewModel::commitNewGame,
+                        enabled = commitEnabled,
+                        shape = RectangleShape
+                    ) {
                         Text(
                             stringResource(R.string.ok)
                         )

@@ -17,6 +17,7 @@ import com.boardgamer.ui.NewMessage
 import com.boardgamer.ui.Participate
 import com.boardgamer.ui.Profile
 import com.boardgamer.ui.Registration
+import com.boardgamer.ui.SuggestGame
 import com.boardgamer.ui.theme.BoardGamerTheme
 import com.boardgamer.viewmodel.AppointmentInfosViewModel
 import com.boardgamer.viewmodel.CurrentEventsViewModel
@@ -27,6 +28,7 @@ import com.boardgamer.viewmodel.NewMessageViewModel
 import com.boardgamer.viewmodel.ParticipateViewModel
 import com.boardgamer.viewmodel.ProfileViewModel
 import com.boardgamer.viewmodel.RegistrationViewModel
+import com.boardgamer.viewmodel.SuggestGameViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +82,10 @@ fun AppNavigation() {
             val playerId = backStackEntry.arguments!!.getString("playerId")!!.toLong()
             val appointmentId = backStackEntry.arguments!!.getString("appointmentId")!!.toLong()
             NewMessage(navController, playerId, appointmentId)
+        }
+        composable(SuggestGameViewModel.SCREEN_NAME + "/{appointmentId}") { backStackEntry ->
+            val appointmentId = backStackEntry.arguments!!.getString("appointmentId")!!.toLong()
+            SuggestGame(navController, appointmentId)
         }
     }
 }

@@ -1,9 +1,25 @@
 package com.boardgamer.ui
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -12,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -50,10 +65,14 @@ fun NewMessage(navController: NavController, playerId: Long, appointmentId: Long
                 title = {
                     Text(
                         text = stringResource(id = R.string.message_headline)
-                ) },
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.Close, contentDescription = "Schließen")
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(R.string.close)
+                        )
                     }
                 }
             )
@@ -69,7 +88,7 @@ fun NewMessage(navController: NavController, playerId: Long, appointmentId: Long
         ) {
             Text(
                 text = stringResource(id = R.string.message_quick),
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.titleMedium
             )
 
             OutlinedButton(
@@ -78,9 +97,12 @@ fun NewMessage(navController: NavController, playerId: Long, appointmentId: Long
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape
-            ) { Text(
-                text = message15min
-            ) }
+            ) {
+                Text(
+                    text = message15min,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
             OutlinedButton(
                 onClick = {
@@ -90,8 +112,10 @@ fun NewMessage(navController: NavController, playerId: Long, appointmentId: Long
                 shape = RectangleShape
             ) {
                 Text(
-                    text = message30min
-            ) }
+                    text = message30min,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
             OutlinedButton(
                 onClick = {
@@ -101,8 +125,10 @@ fun NewMessage(navController: NavController, playerId: Long, appointmentId: Long
                 shape = RectangleShape
             ) {
                 Text(
-                    text = message45min
-            ) }
+                    text = message45min,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
             OutlinedButton(
                 onClick = {
@@ -112,8 +138,10 @@ fun NewMessage(navController: NavController, playerId: Long, appointmentId: Long
                 shape = RectangleShape
             ) {
                 Text(
-                    text = message60min
-            ) }
+                    text = message60min,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -122,8 +150,10 @@ fun NewMessage(navController: NavController, playerId: Long, appointmentId: Long
                 onValueChange = viewModel::onMessageChange,
                 label = {
                     Text(
-                        text = stringResource(id = R.string.message_own)
-                    ) },
+                        text = stringResource(id = R.string.message_own),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 250.dp)
@@ -139,7 +169,8 @@ fun NewMessage(navController: NavController, playerId: Long, appointmentId: Long
                 shape = RectangleShape
             ) {
                 Text(
-                    text = stringResource(id = R.string.message_post)
+                    text = stringResource(id = R.string.message_post),
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }

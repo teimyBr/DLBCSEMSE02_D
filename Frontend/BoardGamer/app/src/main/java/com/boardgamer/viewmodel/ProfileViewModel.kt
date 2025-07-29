@@ -3,6 +3,7 @@ package com.boardgamer.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boardgamer.api.BackendAPI
+import com.boardgamer.model.DateTimeFormats
 import com.boardgamer.model.Player
 import com.boardgamer.ui.toJavaLocalDate
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
-import java.time.format.DateTimeFormatter
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -62,10 +62,11 @@ class ProfileViewModel() : ViewModel() {
                 if (evaluations.isNotEmpty()) {
                     val hostRating = (evaluations.map { it.hostEvaluation }.average() * 20).toInt()
                     val foodRating = (evaluations.map { it.mealEvaluation }.average() * 20).toInt()
-                    val generalRating = (evaluations.map { it.overallEvaluation }.average() * 20).toInt()
+                    val generalRating =
+                        (evaluations.map { it.overallEvaluation }.average() * 20).toInt()
 
                     val formattedDate = lastHostedAppointment.date.toJavaLocalDate()
-                        .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                        .format(DateTimeFormats.dateFormatter)
 
                     lastEventDetails = LastEventDetails(
                         date = formattedDate,

@@ -51,8 +51,6 @@ class CurrentEventsViewModel : ViewModel() {
 
     private var currentPlayerId: Long = -1L
 
-    init {}
-
     fun initialize(playerId: Long) {
         if (this.currentPlayerId == playerId && _appointmentsState.value is AppointmentsState.Success) return
 

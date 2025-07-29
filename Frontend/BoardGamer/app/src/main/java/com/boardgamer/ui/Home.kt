@@ -21,9 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.boardgamer.R
@@ -64,24 +64,23 @@ fun Home(navController: NavController) {
 
             Text(
                 text = stringResource(id = R.string.app_welcome),
-                fontSize = 25.sp
+                style = MaterialTheme.typography.headlineMedium
             )
 
             Spacer(modifier = Modifier.height(48.dp))
 
             Text(
                 text = stringResource(id = R.string.login_now),
-                fontSize = 18.sp
+                style = MaterialTheme.typography.bodyLarge
             )
-
-            Spacer(modifier = Modifier.height(2.dp))
 
             OutlinedTextField(
                 value = username,
                 onValueChange = { viewModel.onUsernameChange(it) },
                 label = {
                     Text(
-                        text = stringResource(R.string.name)
+                        text = stringResource(R.string.name),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 },
             )
@@ -93,7 +92,8 @@ fun Home(navController: NavController) {
                 onValueChange = { viewModel.onPasswordChange(it) },
                 label = {
                     Text(
-                        text = stringResource(R.string.password)
+                        text = stringResource(R.string.password),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 },
                 visualTransformation = PasswordVisualTransformation(),
@@ -113,7 +113,8 @@ fun Home(navController: NavController) {
                     )
                 } else {
                     Text(
-                        text = stringResource(id = R.string.login)
+                        text = stringResource(id = R.string.login),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
@@ -123,7 +124,8 @@ fun Home(navController: NavController) {
                 Text(
                     text = (loginState as LoginState.Error).message,
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(top = 8.dp)
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
@@ -131,7 +133,7 @@ fun Home(navController: NavController) {
 
             Text(
                 text = stringResource(id = R.string.not_registered_yet),
-                fontSize = 18.sp
+                style = MaterialTheme.typography.titleLarge
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -141,7 +143,8 @@ fun Home(navController: NavController) {
                 shape = RectangleShape
             ) {
                 Text(
-                    text = stringResource(id = R.string.go_to_registration)
+                    text = stringResource(id = R.string.go_to_registration),
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
