@@ -1,6 +1,10 @@
 # DLBCSEMSE02_D
 Aufgabenstellung 2: Board-Gamer-App
 
+## App-Präsentation
+[app_show2.webm](https://github.com/user-attachments/assets/0b3ba947-0b7c-439c-9b2e-bfc753778e30)
+
+
 ## UI-Konzept
 Link zum Testen des Prototyps: https://www.figma.com/proto/Q4iVmpl5158N9qSRTyhGiQ/Untitled?node-id=6-1290&p=f&t=iT2xymim2e7K3vGC-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=6%3A1290
 
