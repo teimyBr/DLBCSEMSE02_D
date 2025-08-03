@@ -44,82 +44,82 @@ http://localhost:8000/docs
 ### AUTHENTIFIZIERUNG & REGISTRIERUNG
 
  * POST /authenticate/{name}/{password}
-   Authentifiziert einen Spieler mit Name und Passwort.
+   authenticate a player through name and password
 
  * POST /register/
-   Registriert einen neuen Spieler.
+   register a new player
 
  * GET /player/{player_id}
-   Gibt die Daten eines Spielers zurück.
+   returns the player with the given id
 
  * GET /players
-   Listet alle Spieler auf.
+   returns all players
 
  * GET /isNextHost/{player_id}
-   Prüft, ob der Spieler als nächster Gastgeber an der Reihe ist.
+   checks if the player with the given id is a potential next host
 
 ### APPOINTMENTS (SPIELEABENDE)
 
  * GET /appointments
-   Gibt die letzten 5 Termine zurück.
+   returns the last five appointments
 
  * POST /appointments/insert/
-   Fügt einen neuen Termin hinzu.
+   adds a new appointment
 
  * POST /appointments/update/
-   Aktualisiert einen bestehenden Termin.
+   updates a appointment
 
 ### PLAYER-APPOINTMENT
 
  * GET /playerAppointments
-   Listet alle player_appointments auf.
+   returns all player appointment links
 
  * POST /playerAppointment/insert/
-   Fügt einen neuen player_appointment hinzu.
+   adds a new player appointment link
 
 ### SPIELE & VORSCHLÄGE
 
  * GET /games
-   Listet alle Spiele auf.
+   returns a list of all games
 
  * POST /game/insert/
-   Fügt ein neues Spiel hinzu.
+   adds a new game
 
  * GET /gameSuggestions/{appointmentId}
-   Gibt alle Spielvorschläge für einen Termin zurück.
+   returns all game suggestion associated with the given appointment id
 
  * POST /gameSuggestions/insert/
-   Fügt Spielvorschläge für einen Termin hinzu.
+   adds a list of game suggestions
 
 ### SPIEL-VOTES
 
  * POST /gameVotes/insert/
-   Fügt eine neue Spiel-Abstimmung hinzu.
+   adds a new game vote
 
  * POST /gameVotes/update/
-   Aktualisiert eine bestehende Abstimmung.
+   updates a game vote
 
  * GET /gameVotes/{appointmentId}/{playerId}
-   Gibt alle Votes eines Spielers für einen Termin zurück.
+   returns all game votes a player made for a given appointment
 
  * GET /gameVotes/{appointmentId}
-   Gibt alle Votes für einen Termin zurück.
+   returns all game votes for a given appointment
 
 ### EVALUATIONS
 
  * POST /evaluations/insert/
-   Fügt eine Bewertung hinzu.
+   adds a new evaluation
 
  * GET /evaluations/{appointmentId}
-   Listet alle Bewertungen für einen Termin auf.
+   returns all evaluation for a appointment
 
 ### NACHRICHTEN
 
  * POST /messages/insert/
-   Fügt eine Nachricht zu einem Termin hinzu.
+   adds a new message
 
  * GET /messages/{appointmentId}
-   Listet alle Nachrichten zu einem Termin auf.
+   returns all messages for a appointment
 
 ## Development
 
@@ -179,28 +179,44 @@ cd Backend
 
 ## Work with the Frontend
 
-Das Frontend ist eine Android App. Daher wird empfohlen mit Android Studio zu arbeiten. 
-Dies ist eine kostenlose IDE auf Basis von Jetbrains IntelliJ welche speziel für die Entwicklung von Android Apps gedacht ist.
+The Frontend is a Android Application. It has been developed using Android Studio.
+Android Studio is a free software, so it is recommended to use it to work on the Frontend app
 
-### Entwicklung an der App
+### Develop the App
 
-Einfach den BroadGamer Ordner im Frontend Ordner in Android Studio öffnen als Projekt
-Danach einmal warten bis der gradle sync durchgelaufen ist & danach sollte alles einsatz bereit sein um die App zu bauen & auch die Unit Test auszuführen.
+To work on the project, just open the BoardGamer folder in the frontend folder as a project in Android Studio.
+When first opening the project make sure to let the gradle sync run. Without a successful gradle sync development is not possible. After the sync was successful it should be possible to work and develop on the app as well as the tests
+
 
 ### Dependencies Frontend
 
 2 Schritte sind hierfür nötig:
 1. Dependency in der libs.version.toml datei hinzufügen. Das Pattern hierfür kann in den vorhandenen abgelesen werden
-2. Danach in der build.gradle.kts datei von dem app module die Abhängigkeit in dem dependencies teil hinzufügen. Pattern kann wieder von vorhandenen abgeguckt werden
+2. Danach in der build.gradle.kts datei von dem app module die Abhängigkeit in dem dependencies teil hinzufügen. Pattern kann wieder von vorhandenen inspiriert werden
 
-### App bauen und laufen lassen
+### Build and run App
 
-Entweder ein Android smartphone anschließen welches erlaubt über adb apk's zu installieren oder einen emulator in android studio aufsetzen
-Danach über den Run Knopf in Android Studio bauen lassen & auf dem Gerät/Emulator installieren
-Die App sollte sich dann automatisch öffnen wenn der build & install prozess durchgelaufen ist.
+**Important** The app can only be tested if the following requirements are met:
+1. The Backend needs to running an reachable in the network of the executing phone or emulator
+2. The BackendAPI class needs to have the basicAddress set to the URL that represent the Backend in the network
 
-### Unit Tests bauen
+Right now the BackendAPI is hard coded to the address that would represent local host of the running device on a emulator.
 
-Einfach die Unit Test datei in Android Studio öffnen
-Diese hat dann in der UI eine Art Button um einzelne Test fälle oder auch eine ganze Klasse auszuführen
-Unabhängig davon kann auch die Gradle Task: testDebugUnitTest oder testReleaseUnitTest ausgeführt werden. Diese lässt *alle* Unit Test laufen
+To run the app either a android phone or a emualtor is needed.
+When android studio successfully finds the target device it will be shown in the UI. Afterwards just select the app build task & press the run button. 
+After the build is finished it should be installed on the device and then launched.
+If there are issue, it may be necessary to install the command line tools through the sdk manager offered by Android Studio.
+
+### Run Tests
+
+The tests can be run through Android Studio.
+When you open a test class the UI will show run buttons next to test cases and also next to classes containing tests.
+These will either run a test or *all* tests in a class.
+
+At the moment the following two test files exist:
+1. APITest: Integration test that check the connection to the Backend through the BackendAPI class
+2. JsonConversionTests: Unit Test that check the conversion from and to JSON of the different models
+
+**Note** The integrationstest for the Backend connection may fail. The state of the Backend is not reset after running a test. This means that while the first execution may be successfull, following executions may fail until the database is reset to the initial state by deleting the docker & the database volume.
+
+**Important** The intergrationtest with the Backend can only be run when the Backend is running and reachable. The Address given to the creation of the BackendAPI class instance needs to represent the basic route in the local network of the executing device that connects to the Backend. Right now that route is hard coded to the localhost address that is valid, when the backend docker is running on the same device.

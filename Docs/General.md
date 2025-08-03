@@ -6,3 +6,4 @@ Backend: Python Backend Projekt
 ## Dateien
 compose.yaml: Backend und Datenbank starten
 database.sql: Datenbankskript
+Readme.md: Grundlegende Informationen über das Projekt
